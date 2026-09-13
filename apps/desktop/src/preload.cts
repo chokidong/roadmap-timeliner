@@ -7,7 +7,6 @@ contextBridge.exposeInMainWorld('roadmapDesktop', {
   rememberRecent: (path: string) => ipcRenderer.invoke('roadmap:remember-recent', path),
   confirmDiscard: () => ipcRenderer.invoke('roadmap:confirm-discard'),
   exportHtml: (html: string, defaultName?: string) => ipcRenderer.invoke('roadmap:export-html', { html, defaultName }),
-  showAbout: () => ipcRenderer.invoke('roadmap:show-about'),
   onOpenRequest: (callback: () => void) => ipcRenderer.on('roadmap:open-request', () => callback()),
   onSaveRequest: (callback: () => void) => ipcRenderer.on('roadmap:save-request', () => callback()),
   onSaveAsRequest: (callback: () => void) => ipcRenderer.on('roadmap:save-as-request', () => callback()),

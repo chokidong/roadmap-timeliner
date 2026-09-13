@@ -6,7 +6,7 @@ A visual roadmap & timeline editor and npm workspace for editing roadmap JSON wi
 
 Roadmap Timeliner provides:
 - **Interactive Single-Page Editor (`roadmap.html`)**: JSON import/export, standalone editable HTML export, static HTML fragment copy, and PNG export.
-- **Electron Desktop Shell (`apps/desktop`)**: Native file menus (New, Open, Recent, Save, Save As, Reload, Export, Print), custom app icon branding, and About dialog.
+- **Desktop App (`apps/desktop`)**: Native file menus (New, Open, Recent, Save, Save As, Export, Print), custom app icon branding, and an About dialog.
 - **Shared Validation & Mutation Core (`packages/core`)**: Unified `strict` and `compatible` JSON schema validation and ID-based batch patch operations.
 - **Document Session Service (`packages/document-service`)**: Memory snapshots, dirty tracking, undo/redo, and atomic filesystem saves.
 - **Export Package (`packages/export`)**: Headless JSON serialization and clean static HTML exports.
@@ -28,7 +28,7 @@ npm run desktop
 npm run desktop:roadmap
 ```
 
-- `npm run desktop` launches the local `roadmap.html` in the Roadmap Timeliner Electron window.
+- `npm run desktop` launches the local `roadmap.html` in the Roadmap Timeliner app window.
 - `npm run desktop:roadmap` automatically loads `./roadmap.json` once the window is ready.
 - You can also load any custom file: `npm run desktop -- /path/to/roadmap.json`.
 

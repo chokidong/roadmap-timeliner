@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, dialog, ipcMain, shell, MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, Menu, dialog, ipcMain, MenuItemConstructorOptions } from 'electron';
 import { readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,22 +14,7 @@ type RecentFile = { path: string; openedAt: number };
 app.name = 'Roadmap Timeliner';
 app.setName('Roadmap Timeliner');
 
-app.setAboutPanelOptions({
-  applicationName: 'Roadmap Timeliner',
-  applicationVersion: '0.1.0',
-  version: '0.1.0',
-  copyright: 'Copyright © 2026 Roadmap Timeliner',
-  credits: 'https://github.com/chokidong/roadmap-timeliner',
-  authors: ['https://github.com/chokidong/roadmap-timeliner'],
-  website: 'https://github.com/chokidong/roadmap-timeliner',
-  iconPath: iconPath
-});
-
 function showAboutDialog(): void {
-  if (process.platform === 'darwin') {
-    app.showAboutPanel();
-    return;
-  }
   const options = {
     type: 'info' as const,
     title: 'About Roadmap Timeliner',
@@ -122,7 +107,6 @@ async function installMenu(): Promise<void> {
     { type: 'separator' },
     { label: 'Save', accelerator: 'CmdOrCtrl+S', click: () => runRendererCommand('save') },
     { label: 'Save As…', accelerator: 'CmdOrCtrl+Shift+S', click: () => runRendererCommand('saveAs') },
-    { label: 'Reload from Disk', accelerator: 'CmdOrCtrl+R', click: () => runRendererCommand('reload') },
     { type: 'separator' },
     { label: 'Export HTML…', accelerator: 'CmdOrCtrl+E', click: () => runRendererCommand('exportHtml') },
     { label: 'Export PDF…', click: () => void exportPdf() },
@@ -141,8 +125,6 @@ async function installMenu(): Promise<void> {
       submenu: [
         { label: `About ${app.name}`, click: () => showAboutDialog() },
         { type: 'separator' },
-        { role: 'services' },
-        { type: 'separator' },
         { role: 'hide' },
         { role: 'hideOthers' },
         { role: 'unhide' },
@@ -160,28 +142,10 @@ async function installMenu(): Promise<void> {
   template.push({
     label: 'Edit',
     submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
-      { type: 'separator' },
       { role: 'cut' },
       { role: 'copy' },
       { role: 'paste' },
       { role: 'selectAll' }
-    ]
-  });
-
-  template.push({
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { role: 'forceReload' },
-      { role: 'toggleDevTools' },
-      { type: 'separator' },
-      { role: 'resetZoom' },
-      { role: 'zoomIn' },
-      { role: 'zoomOut' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' }
     ]
   });
 
@@ -190,24 +154,10 @@ async function installMenu(): Promise<void> {
       label: 'Window',
       submenu: [
         { role: 'minimize' },
-        { role: 'zoom' },
-        { type: 'separator' },
         { role: 'front' }
       ]
     });
   }
-
-  template.push({
-    role: 'help',
-    submenu: [
-      { label: `About ${app.name}`, click: () => showAboutDialog() },
-      { type: 'separator' },
-      {
-        label: 'Documentation & GitHub',
-        click: () => void shell.openExternal('https://github.com/chokidong/roadmap-timeliner')
-      }
-    ]
-  });
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
@@ -324,8 +274,6 @@ ipcMain.handle('roadmap:export-html', async (_event, payload: { html: string; de
 
 ipcMain.handle('roadmap:reload', async (_event, path: string) => ({ path, text: await readFile(path, 'utf8') }));
 ipcMain.handle('roadmap:remember-recent', async (_event, path: string) => { await rememberRecent(path); });
-ipcMain.handle('roadmap:show-about', async () => { showAboutDialog(); });
-
 app.whenReady().then(() => {
   if (process.platform === 'darwin' && app.dock) {
     try {
