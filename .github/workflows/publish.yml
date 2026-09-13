@@ -44,8 +44,9 @@ jobs:
       - name: Bump Version
         id: bump
         run: |
-          NEW_VERSION=$(npm version patch --workspace @roadmap-timeliner/agent-kit --git-tag-version=false)
-          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          npm version patch --workspace @roadmap-timeliner/agent-kit --git-tag-version=false
+          NEW_VERSION="v$(node -p \"require('./packages/agent-kit/package.json').version\")"
+          echo "NEW_VERSION=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build packages
         run: npm run build
