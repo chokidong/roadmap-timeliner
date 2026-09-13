@@ -1,0 +1,15 @@
+{
+  "name": "@roadmap-timeliner/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "roadmap-mcp": "./dist/index.js" },
+  "files": ["dist"],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.4",
+    "@roadmap-timeliner/core": "*",
+    "@roadmap-timeliner/document-service": "*",
+    "@roadmap-timeliner/export": "*",
+    "zod": "^3.25.0"
+  },
+  "scripts": { "build": "tsc -p tsconfig.json --outDir dist" }
+}

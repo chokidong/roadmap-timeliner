@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "roadmap": {
+    "id": "rm-platform-2026",
+    "title": "2026 플랫폼 로드맵",
+    "locale": "ko",
+    "scale": "month",
+    "showToday": true,
+    "showStatusLegend": true,
+    "darkMode": false,
+    "statuses": [
+      {"id": "st-planned", "name": "계획", "color": "#94A3B8", "pattern": "solid", "border": "solid", "completed": false},
+      {"id": "st-in-progress", "name": "진행 중", "color": "#3B82F6", "pattern": "diagonal", "progressPattern": "diagonal", "border": "solid", "completed": false},
+      {"id": "st-completed", "name": "완료", "color": "#10B981", "pattern": "solid", "border": "solid", "completed": true}
+    ],
+    "badges": [],
+    "categories": [
+      {
+        "id": "cat-platform-foundation", "name": "플랫폼 기반", "color": "#6366F1", "order": 0,
+        "items": [
+          {"id": "item-user-auth-improvement", "name": "사용자 인증 개선", "start": "2026-01-05", "end": "2026-01-31", "statusId": "st-in-progress", "priority": "high", "progress": 70},
+          {"id": "item-api-v2-release", "name": "API 버전 2 출시", "start": "2026-02-01", "end": "2026-03-15", "statusId": "st-planned", "priority": "high", "progress": 20},
+          {"id": "item-rate-limit", "name": "레이트 리밋 적용", "start": "2026-03-16", "end": "2026-04-10", "statusId": "st-planned", "priority": "medium"}
+        ]
+      },
+      {
+        "id": "cat-web-frontend", "name": "웹 프론트엔드", "color": "#10B981", "order": 1,
+        "items": [
+          {"id": "item-design-system", "name": "디자인 시스템 정비", "start": "2026-01-12", "end": "2026-02-28", "statusId": "st-completed", "priority": "medium", "progress": 100},
+          {"id": "item-dashboard-redesign", "name": "대시보드 개편", "start": "2026-03-01", "end": "2026-04-30", "statusId": "st-in-progress", "priority": "high", "progress": 45},
+          {"id": "item-accessibility-improvement", "name": "접근성 개선", "statusId": "st-planned", "priority": "medium"}
+        ]
+      },
+      {
+        "id": "cat-data-analytics", "name": "데이터 및 분석", "color": "#F59E0B", "order": 2,
+        "items": [
+          {"id": "item-event-tracking", "name": "이벤트 추적 체계 구축", "start": "2026-02-15", "end": "2026-03-31", "statusId": "st-in-progress", "priority": "high", "progress": 60},
+          {"id": "item-weekly-report-automation", "name": "주간 리포트 자동화", "start": "2026-04-01", "end": "2026-05-15", "statusId": "st-planned", "priority": "low"}
+        ]
+      },
+      {
+        "id": "cat-infrastructure-operations", "name": "인프라 및 운영", "color": "#3B82F6", "order": 3,
+        "items": [
+          {"id": "item-cicd-improvement", "name": "CI/CD 파이프라인 개선", "start": "2026-01-20", "end": "2026-02-14", "statusId": "st-completed", "priority": "high", "progress": 100},
+          {"id": "item-monitoring-alerts", "name": "모니터링 알림 개편", "start": "2026-03-10", "end": "2026-04-05", "statusId": "st-in-progress", "priority": "medium", "progress": 35}
+        ]
+      },
+      {
+        "id": "cat-growth-launch", "name": "성장 및 출시", "color": "#8B5CF6", "order": 4,
+        "items": [
+          {"id": "item-beta-user-recruitment", "name": "베타 사용자 모집", "start": "2026-05-01", "end": "2026-05-31", "statusId": "st-planned", "priority": "high"},
+          {"id": "item-production-launch-preparation", "name": "정식 출시 준비", "statusId": "st-planned", "priority": "high"}
+        ]
+      }
+    ],
+    "milestones": [],
+    "metadata": {
+      "assumptions": [
+        "'접근성 개선'과 '정식 출시 준비'는 일정 미정으로 제공되어 시작일과 종료일을 생략했습니다.",
+        "진행률이 제공되지 않은 항목은 진행률 필드를 생략했습니다."
+      ]
+    }
+  }
+}

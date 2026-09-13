@@ -1,0 +1,73 @@
+name: Release & Publish to npm
+
+on:
+  push:
+    branches:
+      - release # release 브랜치로 push/merge 시 자동 실행
+
+jobs:
+  version-and-publish:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release-publish
+      cancel-in-progress: false
+    permissions:
+      contents: write # package.json 커밋 및 태그 푸시 권한
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: release
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Configure Git Committer
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      # 버전을 patch(0.1.0 -> 0.1.1) 단위로 자동 업그레이드
+      - name: Bump Version
+        id: bump
+        run: |
+          NEW_VERSION=$(npm version patch --workspace @roadmap-timeliner/agent-kit --git-tag-version=false)
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Verify npm package contents
+        run: npm pack --dry-run --workspace @roadmap-timeliner/agent-kit
+
+      - name: Publish to npm
+        run: |
+          PACKAGE_NAME='@roadmap-timeliner/agent-kit'
+          VERSION='${{ steps.bump.outputs.NEW_VERSION }}'
+          if npm view "${PACKAGE_NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "${PACKAGE_NAME}@${VERSION} is already published; continuing release recovery."
+          else
+            npm publish --workspace @roadmap-timeliner/agent-kit --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Commit version bump & create tag
+        run: |
+          git add packages/agent-kit/package.json package-lock.json
+          git commit -m "chore(release): bump agent-kit to ${{ steps.bump.outputs.NEW_VERSION }} [skip ci]"
+          git tag -a ${{ steps.bump.outputs.NEW_VERSION }} -m "Release ${{ steps.bump.outputs.NEW_VERSION }}"
+          git push --atomic origin HEAD:release refs/tags/${{ steps.bump.outputs.NEW_VERSION }}

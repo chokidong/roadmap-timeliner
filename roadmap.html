@@ -1,0 +1,2759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap Timeliner</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%231e1e38'/%3E%3Crect x='110' y='145' width='230' height='52' rx='18' fill='%236366f1'/%3E%3Crect x='170' y='230' width='220' height='52' rx='18' fill='%2310b981'/%3E%3Crect x='120' y='315' width='200' height='52' rx='18' fill='%23f59e0b'/%3E%3Cline x1='256' y1='110' x2='256' y2='400' stroke='%23f43f5e' stroke-width='8'/%3E%3Ccircle cx='256' cy='110' r='16' fill='%23f43f5e'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/dist/html2canvas-pro.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════════
+   BASE
+═══════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;-webkit-font-smoothing:antialiased;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',Helvetica,sans-serif;
+  background:#f4f6fa;color:#111827;
+  height:100vh;display:flex;flex-direction:column;overflow:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select,textarea{font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px;}
+.brand-badge:hover{background:#f3f4f6;}
+body.dark-mode .brand-badge:hover{background:#1f293d;}
+body.dark-mode .brand-text{color:#f3f4f6!important;}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER  — big centered title
+═══════════════════════════════════════════════════════ */
+.header{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  flex-shrink:0;
+  position:relative;
+  z-index:80;
+  display:flex;
+  flex-direction:column;
+}
+.header-top{
+  height:64px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 20px;
+}
+/* left side of header */
+.header-left{display:flex;align-items:center;gap:6px;}
+/* center — title */
+.header-center{display:flex;justify-content:center;align-items:center;}
+.roadmap-title{
+  font-size:22px;font-weight:800;color:#111827;letter-spacing:-.5px;
+  border:none;background:transparent;outline:none;text-align:center;
+  padding:4px 10px;border-radius:8px;
+  min-width:80px;max-width:500px;width:auto;
+  transition:background .15s;
+}
+.roadmap-title:hover{background:#f3f4f6;}
+.roadmap-title:focus{background:#f3f4f6;box-shadow:0 0 0 2px #6366f1;}
+.roadmap-sub{
+  font-size:12px;color:#9ca3af;text-align:center;
+  margin-top:-2px;padding:0 12px 10px;
+  display:none; /* shown when subtitle exists */
+}
+/* right side of header */
+.header-right{display:flex;align-items:center;justify-content:flex-end;gap:6px;}
+
+/* ── icon button base ── */
+.ibtn{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  padding:7px 10px;border-radius:9px;font-size:12px;font-weight:500;
+  color:#374151;transition:background .12s;white-space:nowrap;
+}
+.ibtn:hover{background:#f3f4f6;}
+.ibtn:disabled{opacity:.35;pointer-events:none;}
+.ibtn-primary{background:#6366f1;color:#fff;}
+.ibtn-primary:hover{background:#4f46e5;}
+.ibtn-ghost{color:#6b7280;}
+.ibtn-ghost:hover{background:#f3f4f6;color:#374151;}
+.ibtn-icon{padding:7px 9px;}
+.ibtn-danger{color:#ef4444;}
+.ibtn-danger:hover{background:#fee2e2;}
+
+/* undo/redo button group */
+.btn-pair{
+  display:flex;border:1px solid #e5e7eb;border-radius:9px;overflow:hidden;
+}
+.btn-pair .ibtn{border-radius:0;border-right:1px solid #e5e7eb;padding:6px 9px;}
+.btn-pair .ibtn:last-child{border-right:none;}
+
+/* scale group */
+.scale-group{
+  display:flex;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;
+}
+.scale-group .ibtn{border-radius:0;border-right:1px solid #e5e7eb;padding:5px 10px;font-size:11px;font-weight:600;}
+.scale-group .ibtn:last-child{border-right:none;}
+.scale-group .ibtn.active{background:#ede9fe;color:#6366f1;}
+
+/* ── MORE MENU button ── */
+.more-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:9px;color:#374151;
+  transition:background .12s;
+}
+.more-btn:hover{background:#f3f4f6;}
+
+/* ── header toolbar row ── */
+.header-toolbar{
+  height:42px;
+  border-bottom:1px solid #f3f4f6;
+  display:flex;align-items:center;
+  padding:0 20px;gap:6px;
+}
+.htoolbar-sep{width:1px;height:18px;background:#e5e7eb;margin:0 4px;}
+/* search */
+.search-box{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  background:#f3f4f6;border-radius:8px;padding:5px 11px;
+  min-width:190px;
+}
+.search-box input{border:none;background:none;outline:none;font-size:12px;color:#374151;width:100%;}
+.search-box input::placeholder{color:#9ca3af;}
+.search-box svg{flex-shrink:0;}
+
+/* lang select */
+.lang-sel{
+  font-size:11px;font-weight:500;color:#6b7280;
+  border:1px solid #e5e7eb;border-radius:7px;
+  padding:4px 22px 4px 8px;background:white;cursor:pointer;outline:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236b7280' d='M2 3.5L5 6.5L8 3.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 6px center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   MORE MENU DROPDOWN
+═══════════════════════════════════════════════════════ */
+.dropdown{
+  position:fixed;z-index:3000;
+  background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+  padding:6px;min-width:220px;
+  max-height:85vh;overflow-y:auto;
+  display:none;
+}
+.dropdown.open{display:block;}
+.dd-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:8px;
+  font-size:13px;font-weight:500;color:#374151;
+  cursor:pointer;transition:background .1s;
+}
+.dd-item:hover{background:#f3f4f6;}
+.dd-item.danger{color:#ef4444;}
+.dd-item.danger:hover{background:#fee2e2;}
+.dd-sep{height:1px;background:#f3f4f6;margin:5px 0;}
+.dd-section{
+  font-size:10px;font-weight:700;color:#9ca3af;
+  padding:5px 12px 3px;text-transform:uppercase;letter-spacing:.6px;
+}
+.dd-item .dd-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:#f3f4f6;flex-shrink:0;}
+.dd-item .dd-icon svg{width:14px;height:14px;}
+
+/* ═══════════════════════════════════════════════════════
+   ONBOARDING / EMPTY STATE
+═══════════════════════════════════════════════════════ */
+.onboarding{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:40px 20px;overflow:auto;
+}
+.onboard-card{
+  background:#fff;border-radius:20px;
+  box-shadow:0 4px 40px rgba(0,0,0,.08);
+  width:100%;max-width:640px;
+  padding:0;overflow:hidden;
+}
+.onboard-hero{
+  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#a78bfa 100%);
+  padding:40px 40px 32px;position:relative;overflow:hidden;
+}
+.onboard-hero::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(-45deg,transparent,transparent 20px,rgba(255,255,255,.04) 20px,rgba(255,255,255,.04) 40px);
+}
+.onboard-hero-title{
+  font-size:28px;font-weight:800;color:#fff;
+  letter-spacing:-.6px;margin-bottom:8px;position:relative;
+}
+.onboard-hero-sub{
+  font-size:14px;color:rgba(255,255,255,.75);
+  line-height:1.6;position:relative;max-width:420px;
+}
+/* Mini roadmap preview */
+.onboard-preview{
+  position:relative;margin-top:24px;
+  background:rgba(255,255,255,.1);border-radius:10px;
+  padding:14px 16px;backdrop-filter:blur(4px);
+}
+.preview-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.preview-bar-row:last-child{margin-bottom:0;}
+.preview-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.85);width:80px;flex-shrink:0;}
+.preview-bar{height:18px;border-radius:20px;position:relative;overflow:hidden;}
+.preview-bar::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:repeating-linear-gradient(-50deg,transparent,transparent 5px,rgba(255,255,255,.15) 5px,rgba(255,255,255,.15) 10px);
+}
+.preview-bar-label{font-size:10px;font-weight:600;color:#fff;position:absolute;left:10px;top:50%;transform:translateY(-50%);white-space:nowrap;}
+
+.onboard-body{padding:32px 40px;}
+.onboard-body h3{font-size:15px;font-weight:700;color:#111827;margin-bottom:6px;}
+.onboard-body p{font-size:13px;color:#6b7280;line-height:1.6;margin-bottom:24px;}
+
+.onboard-options{display:flex;flex-direction:column;gap:10px;}
+.onboard-option{
+  display:flex;align-items:center;gap:14px;
+  padding:16px;border-radius:12px;
+  border:1.5px solid #e5e7eb;cursor:pointer;
+  transition:all .15s;
+}
+.onboard-option:hover{border-color:#6366f1;background:#fafbff;transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,102,241,.1);}
+.onboard-option.primary-opt{border-color:#6366f1;background:#fafbff;}
+.onboard-option.primary-opt:hover{background:#ede9fe;}
+.onboard-opt-icon{
+  width:42px;height:42px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:#ede9fe;color:#6366f1;
+}
+.onboard-opt-icon svg{width:20px;height:20px;}
+.onboard-opt-text{flex:1;}
+.onboard-opt-title{font-size:14px;font-weight:700;color:#111827;margin-bottom:2px;}
+.onboard-opt-sub{font-size:12px;color:#9ca3af;}
+.onboard-opt-arrow{color:#d1d5db;flex-shrink:0;transition:color .12s;}
+.onboard-option:hover .onboard-opt-arrow{color:#6366f1;}
+
+/* template picker step */
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.tmpl-card{
+  padding:14px;border-radius:10px;border:1.5px solid #e5e7eb;
+  cursor:pointer;transition:all .15s;
+}
+.tmpl-card:hover{border-color:#6366f1;background:#fafbff;}
+.tmpl-card.selected{border-color:#6366f1;background:#ede9fe;}
+.tmpl-card-title{font-size:13px;font-weight:700;color:#111827;margin-bottom:3px;}
+.tmpl-card-sub{font-size:11px;color:#9ca3af;}
+.tmpl-card-preview{
+  display:flex;flex-direction:column;gap:4px;margin-top:10px;
+}
+.tmpl-preview-cat{display:flex;align-items:center;gap:6px;}
+.tmpl-preview-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.tmpl-preview-cat-name{font-size:10px;font-weight:600;color:#374151;}
+.tmpl-preview-bar{height:6px;border-radius:20px;margin-left:12px;}
+.onboard-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:24px;}
+.onboard-back{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:#6b7280;cursor:pointer;margin-right:auto;}
+.onboard-back:hover{color:#374151;}
+
+/* ═══════════════════════════════════════════════════════
+   TIMELINE LAYOUT
+═══════════════════════════════════════════════════════ */
+.app-body{flex:1;display:flex;overflow:hidden;}
+.empty-timeline{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:linear-gradient(135deg,#f8faff,#fff);}
+.empty-timeline-card{max-width:420px;text-align:center;padding:36px;border:1px dashed #c7d2fe;border-radius:16px;background:#fff;box-shadow:0 10px 30px rgba(99,102,241,.08);}
+.empty-timeline-card h2{margin:0 0 8px;font-size:20px;color:#1f2937;}
+.empty-timeline-card p{margin:0 0 20px;font-size:13px;line-height:1.55;color:#6b7280;}
+.tl-wrap{
+  flex:1;overflow:auto;background:#fff;position:relative;
+}
+
+/* Header row */
+.tl-header{
+  position:sticky;top:0;z-index:30;
+  display:flex;background:#fff;
+  border-bottom:2px solid #e5e7eb;
+  height:48px;
+}
+.tl-header-label{
+  width:280px;min-width:280px;
+  display:flex;align-items:center;
+  padding:0 20px;
+  font-size:10px;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.7px;
+  border-right:1px solid #e5e7eb;
+  position:sticky;left:0;z-index:45;background:#fff;
+  box-shadow:2px 0 6px rgba(0,0,0,.03);
+}
+.tl-header-cells{display:flex;flex:1;}
+.tl-hcell{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-right:1px solid #f3f4f6;flex-shrink:0;
+}
+.tl-hcell .hm{font-size:12px;font-weight:700;color:#374151;}
+.tl-hcell .hs{font-size:10px;color:#9ca3af;margin-top:1px;}
+.tl-hcell.today-col{background:#fef9ec;}
+
+/* Category row */
+.tl-cat-row{
+  display:flex;min-height:38px;
+  background:#f9fafb;border-bottom:1px solid #e5e7eb;
+}
+.tl-cat-label{
+  width:280px;min-width:280px;
+  display:flex;align-items:center;gap:10px;
+  padding:0 20px;
+  position:sticky;left:0;z-index:25;background:#f9fafb;
+  border-right:1px solid #e5e7eb;
+  box-shadow:2px 0 6px rgba(0,0,0,.03);
+  cursor:pointer;transition:background .12s;
+  user-select:none;
+}
+.tl-cat-label:hover{background:#f3f4f6;}
+.tl-cat-label:hover .cat-acts{opacity:1;}
+.cat-dot{
+  width:9px;height:9px;border-radius:50%;flex-shrink:0;
+  box-shadow:0 0 0 2.5px #fff,0 0 0 4px currentColor;
+}
+.cat-info{display:flex;flex-direction:column;gap:1px;flex:1;min-width:0;}
+.cat-nm{font-size:13px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cat-sb{font-size:10px;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cat-acts{display:flex;gap:2px;flex-shrink:0;opacity:0;transition:opacity .12s;}
+.mini-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:5px;color:#9ca3af;
+  transition:all .1s;
+}
+.mini-btn:hover{background:#e5e7eb;color:#374151;}
+.mini-btn.danger:hover{background:#fee2e2;color:#ef4444;}
+.cat-cells{
+  flex:1;position:relative;overflow:hidden;
+  background:repeating-linear-gradient(90deg,transparent,transparent calc(var(--cw) - 1px),#f3f4f6 calc(var(--cw) - 1px),#f3f4f6 var(--cw));
+}
+
+/* Item row */
+.tl-item-row{
+  display:flex;min-height:66px;
+  border-bottom:1px solid #f3f4f6;background:#fff;
+  transition:background .1s;
+}
+.tl-item-row:hover{background:#fafbff;}
+.tl-item-label{
+  width:280px;min-width:280px;
+  display:flex;align-items:center;
+  padding:10px 14px 10px 22px;
+  position:sticky;left:0;z-index:25;background:#fff;
+  border-right:1px solid #e5e7eb;
+  box-shadow:2px 0 6px rgba(0,0,0,.03);
+  cursor:pointer;transition:background .1s;
+  user-select:none;position:relative;
+}
+.tl-item-row:hover .tl-item-label{background:#fafbff;}
+.tl-item-label:hover .item-acts{opacity:1;}
+.item-left{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px;}
+.item-title-row{display:flex;align-items:center;gap:4px;min-width:0;width:100%;}
+.item-nm{font-size:14px;font-weight:700;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px;}
+.item-subs{font-size:11px;color:#7b8798;display:flex;align-items:center;flex-wrap:nowrap;overflow:hidden;white-space:nowrap;}
+.item-sub-txt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sub-sep{color:#d1d5db;margin:0 4px;flex-shrink:0;}
+.item-right{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:auto;padding-left:8px;transition:opacity .12s;}
+.tl-item-label:hover .item-right{opacity:0;pointer-events:none;}
+.item-acts{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  display:flex;gap:2px;opacity:0;transition:opacity .12s;
+  background:#fff;padding:3px 4px;border-radius:8px;
+  box-shadow:-2px 0 8px rgba(0,0,0,.08);z-index:5;
+}
+
+/* link icon */
+.lnk-ico{display:inline-flex;align-items:center;color:#9ca3af;transition:color .1s;}
+.lnk-ico:hover{color:#6366f1;}
+
+/* priority pip */
+.pri-pip{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* badge text pill */
+.bdg-txt{
+  display:inline-flex;align-items:center;
+  padding:2px 7px;border-radius:20px;
+  font-size:9px;font-weight:800;letter-spacing:.4px;color:#fff;
+  white-space:nowrap;
+}
+
+/* item cells area */
+.item-cells{
+  flex:1;position:relative;overflow:hidden;
+  background:repeating-linear-gradient(90deg,transparent,transparent calc(var(--cw) - 1px),#f9fafb calc(var(--cw) - 1px),#f9fafb var(--cw));
+}
+
+/* ═══════════════════════════════════════════════════════
+   ITEM BAR — PILL
+═══════════════════════════════════════════════════════ */
+.bar-outer{
+  position:absolute;top:50%;transform:translateY(-50%);
+  height:34px;z-index:4;cursor:pointer;
+}
+.bar-pill{
+  width:100%;height:100%;border-radius:20px;
+  display:flex;align-items:center;padding:0 13px;gap:6px;
+  position:relative;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:filter .15s,transform .12s,box-shadow .12s;
+}
+.bar-outer:hover .bar-pill{
+  filter:brightness(1.05);transform:translateY(-1px);
+  box-shadow:0 5px 18px rgba(0,0,0,.14);
+}
+.bar-nm{
+  font-size:12px;font-weight:600;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  position:relative;z-index:2;
+}
+.bar-prog{
+  position:absolute;left:0;top:0;bottom:0;
+  background:rgba(0,0,0,.1);z-index:1;border-radius:20px 0 0 20px;
+}
+.bar-prog::after{content:'';position:absolute;inset:0;border-radius:inherit;}
+.bar-prog.prog-stripe::after,.bar-prog.prog-diagonal::after{background:repeating-linear-gradient(-50deg,transparent 0,transparent 5px,rgba(255,255,255,.25) 5px,rgba(255,255,255,.25) 10px);}
+.bar-prog.prog-vertical::after{background:repeating-linear-gradient(90deg,transparent 0,transparent 5px,rgba(255,255,255,.28) 5px,rgba(255,255,255,.28) 7px);}
+.bar-prog.prog-horizontal::after{background:repeating-linear-gradient(0deg,transparent 0,transparent 5px,rgba(255,255,255,.28) 5px,rgba(255,255,255,.28) 7px);}
+.bar-prog.prog-dot::after{background:radial-gradient(circle 1.5px,rgba(255,255,255,.34) 100%,transparent 100%);background-size:8px 8px;}
+.bar-prog.prog-grid::after{background:linear-gradient(90deg,rgba(255,255,255,.28) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.28) 1px,transparent 1px);background-size:7px 7px;}
+.bar-prog.prog-gradient::after{background:linear-gradient(90deg,rgba(255,255,255,.34),transparent 70%);}
+/* stripe pattern */
+.pat-stripe::before,.pat-diagonal::before{
+  content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;
+  background:repeating-linear-gradient(-50deg,transparent,transparent 6px,rgba(255,255,255,.18) 6px,rgba(255,255,255,.18) 12px);
+}
+/* dot pattern */
+.pat-dot::before{
+  content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;
+  background:radial-gradient(circle 2px,rgba(255,255,255,.2) 100%,transparent 100%);
+  background-size:10px 10px;
+}
+.pat-vertical::before,.pat-horizontal::before,.pat-grid::before,.pat-gradient::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;}
+.pat-vertical::before{background:repeating-linear-gradient(90deg,transparent 0,transparent 6px,rgba(255,255,255,.25) 6px,rgba(255,255,255,.25) 8px);}
+.pat-horizontal::before{background:repeating-linear-gradient(0deg,transparent 0,transparent 6px,rgba(255,255,255,.25) 6px,rgba(255,255,255,.25) 8px);}
+.pat-grid::before{background:linear-gradient(90deg,rgba(255,255,255,.22) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.22) 1px,transparent 1px);background-size:8px 8px;}
+.pat-gradient::before{background:linear-gradient(90deg,rgba(255,255,255,.32),transparent 65%);}
+.bdr-dashed{border:2px dashed rgba(255,255,255,.45);}
+.bdr-dotted{border:2px dotted rgba(255,255,255,.45);}
+.bdr-none{border-color:transparent;}
+
+/* bar badges */
+.bar-badges{display:flex;align-items:center;gap:3px;margin-left:auto;position:relative;z-index:2;flex-shrink:0;}
+.bar-bdg-txt{font-size:8px;font-weight:800;padding:1px 5px;border-radius:10px;background:rgba(255,255,255,.25);color:#fff;text-transform:uppercase;letter-spacing:.4px;}
+
+/* resize handles */
+.rzh{
+  position:absolute;top:0;bottom:0;width:10px;
+  cursor:col-resize;z-index:10;opacity:0;transition:opacity .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.bar-outer:hover .rzh{opacity:1;}
+.rzh::after{content:'';width:2px;height:14px;background:rgba(255,255,255,.55);border-radius:1px;}
+.rzh-l{left:2px;}
+.rzh-r{right:2px;}
+
+/* ═══════════════════════════════════════════════════════
+   GRID LINES & MILESTONE
+═══════════════════════════════════════════════════════ */
+.gl{position:absolute;top:0;bottom:0;width:1px;background:#f3f4f6;z-index:0;pointer-events:none;}
+.gl-today{background:#fbbf24;width:2px;z-index:3;box-shadow:0 0 6px rgba(251,191,36,.35);}
+.ms-vl{position:absolute;top:0;bottom:0;z-index:2;pointer-events:none;}
+.ms-vl-inner{position:absolute;top:0;bottom:0;left:0;width:0;}
+.ms-vl-dashed{border-left:2px dashed;}
+.ms-vl-solid{border-left:2px solid;}
+.ms-vl-dotted{border-left:2px dotted;}
+.ms-mk{
+  position:absolute;z-index:20;transform:translate(-50%,0);
+  display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;transition:transform .12s;
+}
+.ms-mk:hover{transform:translate(-50%,-2px);}
+.ms-tag{
+  margin-top:2px;font-size:9px;font-weight:700;
+  padding:2px 7px;border-radius:10px;white-space:nowrap;
+  background:#fff;border:1.5px solid currentColor;
+  box-shadow:0 2px 6px rgba(0,0,0,.07);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════════ */
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(17,24,39,.3);backdrop-filter:blur(4px);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transition:all .2s;
+}
+.overlay.open{opacity:1;visibility:visible;}
+.modal{
+  background:#fff;border-radius:18px;
+  box-shadow:0 24px 64px rgba(0,0,0,.14);
+  width:520px;max-width:95vw;max-height:88vh;
+  display:flex;flex-direction:column;
+  transform:translateY(18px) scale(.97);transition:transform .2s;
+}
+.overlay.open .modal{transform:none;}
+.modal.wide{width:700px;}
+.mhd{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f3f4f6;}
+.mhd h3{font-size:15px;font-weight:700;}
+.mclose{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#9ca3af;transition:all .12s;cursor:pointer;}
+.mclose:hover{background:#f3f4f6;color:#374151;}
+.mbody{padding:20px 22px;overflow-y:auto;flex:1;}
+.mfoot{padding:12px 22px;border-top:1px solid #f3f4f6;display:flex;align-items:center;gap:8px;}
+.mfoot .sp{flex:1;}
+
+/* Form elements */
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:10px;font-weight:700;color:#9ca3af;margin-bottom:5px;text-transform:uppercase;letter-spacing:.6px;}
+.fi{width:100%;padding:8px 11px;border-radius:9px;border:1.5px solid #e5e7eb;font-size:13px;color:#111827;background:#fff;outline:none;transition:border .15s;}
+.fi:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12);}
+.fi-row{display:flex;gap:12px;}
+.fi-row>.fg{flex:1;}
+.fg>.fi-row>.fi{flex:1;min-width:0;}
+textarea.fi{resize:vertical;min-height:70px;}
+.c-row{display:flex;gap:8px;align-items:center;}
+.c-row input[type="color"]{width:34px;height:34px;border:1.5px solid #e5e7eb;border-radius:8px;padding:2px;cursor:pointer;}
+.c-row input[type="text"]{flex:1;}
+.fi-hint{font-size:10px;color:#9ca3af;margin-top:3px;}
+/* badge selector */
+.bdg-opts{display:flex;flex-wrap:wrap;gap:6px;}
+.bdg-opt{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;
+  border:1.5px solid #e5e7eb;cursor:pointer;transition:all .12s;user-select:none;
+}
+.bdg-opt.sel{border-color:#6366f1;background:#ede9fe;color:#6366f1;}
+
+/* buttons inside modal */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;transition:all .15s;cursor:pointer;white-space:nowrap;}
+.btn-primary{background:#6366f1;color:#fff;}
+.btn-primary:hover{background:#4f46e5;}
+.btn-ghost{border:1.5px solid #e5e7eb;color:#374151;background:transparent;}
+.btn-ghost:hover{background:#f3f4f6;}
+.btn-danger{color:#ef4444;background:transparent;}
+.btn-danger:hover{background:#fee2e2;}
+.btn-sm{padding:6px 13px;font-size:12px;border-radius:8px;}
+
+/* entity list */
+.elist{display:flex;flex-direction:column;gap:4px;}
+.elitem{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 11px;border-radius:9px;
+  border:1.5px solid #f3f4f6;background:#fafafa;
+}
+.elitem .nm{font-size:13px;font-weight:500;flex:1;}
+.elitem .meta{font-size:11px;color:#9ca3af;}
+.elitem .acts{display:flex;gap:4px;margin-left:auto;}
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+.toast-z{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px;}
+.toast{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;background:#fff;border-radius:10px;
+  box-shadow:0 4px 20px rgba(0,0,0,.11);font-size:13px;font-weight:500;
+  border-left:3px solid #6366f1;max-width:340px;
+  animation:toastIn .22s ease;
+}
+.toast.ok{border-color:#10b981;}
+.toast.err{border-color:#ef4444;}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:none;}}
+
+/* ═══════════════════════════════════════════════════════
+   CONTEXT MENU
+═══════════════════════════════════════════════════════ */
+.ctx{
+  position:fixed;z-index:2000;
+  background:#fff;border:1.5px solid #e5e7eb;border-radius:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.11);
+  padding:6px;min-width:200px;display:none;
+}
+.ctx.open{display:block;}
+.ctx-item{display:flex;align-items:center;gap:8px;padding:7px 11px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;color:#374151;transition:background .1s;}
+.ctx-item:hover{background:#f3f4f6;}
+.ctx-item.danger{color:#ef4444;}
+.ctx-item.danger:hover{background:#fee2e2;}
+.ctx-sep{height:1px;background:#f3f4f6;margin:4px 0;}
+.ctx-sec{font-size:10px;font-weight:700;color:#9ca3af;padding:4px 11px 3px;text-transform:uppercase;letter-spacing:.5px;}
+.ctx-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ═══════════════════════════════════════════════════════
+   STATUS BAR
+═══════════════════════════════════════════════════════ */
+.statusbar{
+  height:22px;background:#f9fafb;border-top:1px solid #e5e7eb;
+  display:flex;align-items:center;padding:0 20px;gap:16px;
+  font-size:10px;color:#9ca3af;flex-shrink:0;
+}
+/* export spinner */
+.exp-ov{
+  position:fixed;inset:0;z-index:5000;
+  background:rgba(17,24,39,.4);backdrop-filter:blur(4px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+}
+.exp-spin{
+  width:36px;height:36px;border:3px solid rgba(255,255,255,.2);
+  border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;
+}
+.exp-ov p{font-size:13px;font-weight:600;color:#fff;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.hidden{display:none!important;}
+
+/* Presentation layout: a centered canvas with category rules, no cell grid. */
+.header-top{min-height:126px;height:auto;grid-template-columns:minmax(80px,1fr) minmax(0,760px) minmax(80px,1fr);padding:24px 28px;}
+.header-toolbar{order:-1;}
+.header-center{flex-direction:column;gap:8px;min-width:0;}
+.roadmap-title{width:100%;max-width:760px;font-size:36px;line-height:1.2;letter-spacing:-1.2px;padding:3px 10px;}
+.roadmap-sub{display:block;width:100%;border:0;outline:none;background:transparent;font-size:15px;line-height:1.5;color:#64748b;margin:0;padding:3px 10px;border-radius:6px;}
+.roadmap-sub:focus{background:#f8fafc;box-shadow:0 0 0 2px #6366f1;}
+.roadmap-sub::placeholder{color:#94a3b8;}
+.tl-wrap{padding:24px 32px 48px;overscroll-behavior-x:contain;}
+.roadmap-canvas{margin:0 auto;}
+.tl-header{height:76px;border-bottom:0;}
+.tl-header,.tl-cat-row,.tl-item-row{isolation:isolate;}
+.tl-header-label,.tl-cat-label,.tl-item-label{border-right:0;box-shadow:none;justify-content:flex-start;text-align:left;z-index:40;}
+.tl-header-label{font-size:11px;letter-spacing:1.5px;padding-left:26px;}
+.tl-hcell{border:0;justify-content:flex-start;padding-top:10px;}
+.tl-hcell .hm{font-size:13px;}
+.tl-hcell .hs{color:#94a3b8;margin-top:4px;}
+.tl-hcell.today-col{background:transparent;}
+.tl-hcell.today-col .hm{color:#b7791f;}
+.tl-cat-row{min-height:78px;margin:0 0 2px;padding-top:14px;background:transparent;border:0;position:relative;}
+.tl-cat-label{height:64px;background:color-mix(in srgb,var(--category-color,#cbd5e1) 6%,#fff);padding:12px 24px;border-radius:12px 0 0 12px;position:sticky;gap:0;overflow:visible;}
+.tl-cat-label::before{content:'';display:block;position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:12px 0 0 12px;background:color-mix(in srgb,var(--category-color,#cbd5e1) 82%,#111827);}
+.tl-cat-row .cat-cells{height:64px;background:color-mix(in srgb,var(--category-color,#cbd5e1) 6%,#fff);border-radius:0 12px 12px 0;z-index:1;}
+.cat-gap-lines{position:absolute;top:0;height:14px;overflow:hidden;pointer-events:none;z-index:3;}
+.cat-dot{display:none;}
+.cat-nm{font-size:18px;font-weight:800;letter-spacing:-.45px;}
+.cat-sb{font-size:12px;font-weight:600;color:#526176;margin-top:4px;}
+.cat-info{min-width:max-content;overflow:visible;}
+.cat-nm,.cat-sb{overflow:visible;text-overflow:clip;}
+.cat-acts{position:absolute;right:5px;}
+.cat-info{flex:initial;}
+.cat-cells,.item-cells{background:none;}
+.tl-item-row{min-height:82px;border:0;}
+.tl-item-label{padding:12px 18px 12px 20px;position:sticky;}
+.item-priority{width:10px;min-width:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pri-pip{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cat-link{display:inline-flex;align-items:center;margin-left:12px;color:#64748b;position:relative;z-index:2;}
+.cat-link:hover{color:#374151;}
+.bar-outer{height:36px;}
+.bar-pill{border:2px solid rgba(255,255,255,.42);border-radius:8px;justify-content:center;padding:0 30px;box-shadow:none;}
+.bar-pill.bdr-dashed{border:2px dashed rgba(255,255,255,.58);}
+.bar-pill.bdr-dotted{border:2px dotted rgba(255,255,255,.58);}
+.bar-pill.bdr-none{border-color:transparent;}
+.bar-nm{text-align:center;font-size:12px;}
+.bar-badges{position:absolute;right:10px;margin:0;}
+.bar-prog{background:rgba(0,0,0,.06);border-radius:8px 0 0 8px;}
+.pat-stripe::before,.pat-dot::before{opacity:.25;}
+.bdr-dashed,.bdr-dotted{border-width:2px;}
+.gl-today{width:1px;background:#e8bd65;box-shadow:none;opacity:.6;}
+.ms-vl{opacity:.5;}
+.ms-mk{margin-top:43px;}
+.ms-tag{border:0;box-shadow:none;border-radius:3px;font-size:10px;}
+.export-sheet{background:#fff;padding:40px 40px 48px;}
+.export-heading{text-align:center;margin-bottom:28px;}
+.export-heading h1{font-size:36px;letter-spacing:-1.2px;line-height:1.25;color:#111827;}
+.export-heading p{font-size:15px;color:#64748b;margin-top:10px;}
+.export-sheet .cat-acts,.export-sheet .item-acts,.export-sheet .rzh{display:none;}
+.export-sheet .tl-header-label,.export-sheet .tl-cat-label,.export-sheet .tl-item-label,.export-sheet .tl-legend-wrap{position:relative;left:auto;}
+/* status legend */
+.header-legend{
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+.tl-legend-wrap{
+  display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px 14px;
+  padding:5px 14px;
+  background:#fff;border:1px solid #e5e7eb;border-radius:8px;
+  box-shadow:0 1px 4px rgba(0,0,0,.04);
+  max-width:100%;
+}
+.export-heading .tl-legend-wrap{margin:12px auto 0;}
+.tl-legend-label{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;color:#6b7280;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding-right:8px;cursor:pointer;
+  border-right:1px solid #e5e7eb;
+}
+.tl-legend-label:hover{color:#374151;}
+.tl-legend-items{
+  display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;
+}
+.tl-legend-item{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:3px 8px;border-radius:6px;
+  font-size:12px;font-weight:500;color:#374151;
+  cursor:pointer;user-select:none;
+  transition:all .12s;
+}
+.tl-legend-item:hover{
+  background:#f3f4f6;color:#111827;
+}
+.tl-legend-swatch{
+  width:18px;height:12px;border-radius:3px;
+  position:relative;overflow:hidden;flex-shrink:0;
+  box-shadow:0 1px 2px rgba(0,0,0,.08);
+}
+.tl-legend-name{
+  font-size:12px;line-height:1.2;white-space:nowrap;
+}
+/* Dark mode */
+body.dark-mode{background:#111827;color:#e5e7eb;}
+body.dark-mode .tl-legend-wrap{background:#1f2937;border-color:#374151;color:#e5e7eb;box-shadow:none;}
+body.dark-mode .tl-legend-label{color:#94a3b8;border-right-color:#374151;}
+body.dark-mode .tl-legend-label:hover{color:#e5e7eb;}
+body.dark-mode .tl-legend-item{color:#e5e7eb;}
+body.dark-mode .tl-legend-item:hover{background:#374151;color:#fff;}
+body.dark-mode .header,body.dark-mode .header-toolbar,body.dark-mode .tl-wrap,body.dark-mode .tl-header,body.dark-mode .tl-item-row,body.dark-mode .tl-item-label{background:#111827;color:#e5e7eb;border-color:#263244;}
+body.dark-mode .tl-header-label{background:#111827;border-color:#263244;}
+body.dark-mode .header-toolbar{border-bottom-color:#263244;}
+body.dark-mode .roadmap-title,body.dark-mode .item-nm,body.dark-mode .cat-nm,body.dark-mode .tl-hcell .hm{color:#f8fafc;}
+body.dark-mode .roadmap-sub,body.dark-mode .cat-sb,body.dark-mode .item-subs,body.dark-mode .tl-hcell .hs,body.dark-mode .tl-header-label{color:#94a3b8;}
+body.dark-mode .roadmap-title:hover,body.dark-mode .roadmap-title:focus,body.dark-mode .roadmap-sub:focus,body.dark-mode .ibtn:hover,body.dark-mode .more-btn:hover{background:#1f2937;}
+body.dark-mode .ibtn,body.dark-mode .more-btn,body.dark-mode .lang-sel{color:#e2e8f0;}
+body.dark-mode .lang-sel,body.dark-mode .scale-group,body.dark-mode .btn-pair{background:#182235;border-color:#334155;}
+body.dark-mode .btn-pair .ibtn,body.dark-mode .scale-group .ibtn{border-color:#334155;}
+body.dark-mode .scale-group .ibtn.active{background:#3730a3;color:#e0e7ff;}
+body.dark-mode .htoolbar-sep{background:#334155;}
+/* Native select chrome prevents the custom arrow from being painted repeatedly
+   in dark-mode popup menus. */
+body.dark-mode .lang-sel{appearance:auto;-webkit-appearance:auto;background-image:none;padding-right:8px;color-scheme:dark;}
+body.dark-mode .ibtn:disabled{color:#64748b;opacity:.72;}
+body.dark-mode button:focus-visible,body.dark-mode select:focus-visible,body.dark-mode input:focus-visible{outline:2px solid #818cf8;outline-offset:2px;}
+body.dark-mode ::-webkit-scrollbar-thumb{background:#475569;}
+body.dark-mode .search-box{background:#1f2937;}
+body.dark-mode .search-box input{color:#e5e7eb;}
+body.dark-mode .tl-item-row:hover,body.dark-mode .tl-item-row:hover .tl-item-label{background:#172033;}
+body.dark-mode .item-acts{background:#172033;box-shadow:-2px 0 8px rgba(0,0,0,.4);}
+body.dark-mode .sub-sep{color:#475569;}
+body.dark-mode .tl-cat-label{background:color-mix(in srgb,var(--category-color,#6366f1) 20%,#111827);}
+body.dark-mode .tl-cat-row .cat-cells{background:color-mix(in srgb,var(--category-color,#6366f1) 14%,#111827);}
+body.dark-mode .cat-link,body.dark-mode .lnk-ico{color:#94a3b8;}
+body.dark-mode .dropdown,body.dark-mode .modal{background:#182235;border-color:#334155;color:#e5e7eb;}
+body.dark-mode .dd-item{color:#dbeafe;}
+body.dark-mode .dd-item .dd-icon{background:#263244;color:#94a3b8;}
+body.dark-mode .dd-item:hover,body.dark-mode .mclose:hover{background:#263244;}
+body.dark-mode .dd-section,body.dark-mode .meta,body.dark-mode .fi-hint{color:#94a3b8;}
+body.dark-mode .dd-sep,body.dark-mode .mhd,body.dark-mode .mfoot{border-color:#334155;}
+body.dark-mode .modal .fl{color:#94a3b8;}
+body.dark-mode .modal .fi,body.dark-mode .modal textarea.fi,body.dark-mode .modal select.fi{background:#111827;color:#e5e7eb;border-color:#475569;color-scheme:dark;}
+body.dark-mode .modal input[type="color"]{background:#111827!important;border-color:#475569!important;color-scheme:dark;}
+body.dark-mode .modal .elist .elitem{background:#111827;border-color:#263244;color:#e5e7eb;}
+body.dark-mode .modal .mini-btn{color:#94a3b8;}
+body.dark-mode .modal .mini-btn:hover{background:#263244;color:#e2e8f0;}
+body.dark-mode .modal .btn-ghost{border-color:#475569;color:#cbd5e1;}
+body.dark-mode .modal .btn-ghost:hover{background:#263244;color:#f8fafc;}
+body.dark-mode .modal .btn-danger:hover{background:#3f1d2a;}
+body.dark-mode .modal .bdg-opt{border-color:#475569;color:#cbd5e1;}
+body.dark-mode .modal .bdg-opt:hover{background:#263244;border-color:#64748b;}
+body.dark-mode .modal .bdg-opt.sel{background:#312e81;border-color:#818cf8;color:#e0e7ff;}
+body.dark-mode .statusbar{background:#182235;border-color:#263244;color:#94a3b8;}
+body.dark-mode .ms-tag{background:#182235;}
+body.dark-mode .dark-mode-btn{background:#3730a3;color:#e0e7ff;}
+@media(max-width:700px){.header-top{padding:20px 12px;grid-template-columns:64px minmax(0,1fr) 88px;}.roadmap-title{font-size:26px;}.roadmap-sub{font-size:12px;}.tl-wrap{padding:16px 0 32px;}.roadmap-canvas{margin:0;}.tl-header-label,.tl-cat-label,.tl-item-label{z-index:60;}}
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════ HEADER ════════════════════════ -->
+<div class="header" id="header">
+  <div class="header-top">
+    <div class="header-left">
+      <div class="brand-badge" id="brandBtn" title="About Roadmap Timeliner" style="display:inline-flex;align-items:center;gap:8px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:background 0.15s;user-select:none;">
+        <svg width="22" height="22" viewBox="0 0 512 512" fill="none">
+          <rect width="512" height="512" rx="110" fill="#1e1e38"/>
+          <rect x="110" y="145" width="230" height="52" rx="18" fill="#6366f1"/>
+          <rect x="170" y="230" width="220" height="52" rx="18" fill="#10b981"/>
+          <rect x="120" y="315" width="200" height="52" rx="18" fill="#f59e0b"/>
+          <line x1="256" y1="110" x2="256" y2="400" stroke="#f43f5e" stroke-width="8"/>
+          <circle cx="256" cy="110" r="16" fill="#f43f5e"/>
+        </svg>
+        <span style="font-size:13px;font-weight:700;letter-spacing:-0.2px;color:#1e293b;" class="brand-text">Roadmap Timeliner</span>
+      </div>
+    </div>
+
+    <!-- CENTER: big editable title -->
+    <div class="header-center">
+      <input class="roadmap-title" id="rmTitle" value="Product Roadmap" spellcheck="false" aria-label="Roadmap title">
+      <input class="roadmap-sub" id="rmSubtitle" placeholder="Add a subtitle" aria-label="Roadmap subtitle" spellcheck="false">
+      <div class="header-legend" id="headerLegend"></div>
+    </div>
+
+    <!-- RIGHT: more menu -->
+    <div class="header-right">
+      <button class="more-btn" id="moreBtn" title="More options">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="19" r="1.2" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- secondary toolbar — only visible when roadmap has data -->
+  <div class="header-toolbar" id="headerToolbar">
+    <div class="scale-group" id="scaleGroup">
+      <button class="ibtn active" data-sc="auto">Auto</button>
+      <button class="ibtn" data-sc="week">W</button>
+      <button class="ibtn" data-sc="month">M</button>
+      <button class="ibtn" data-sc="quarter">Q</button>
+    </div>
+    <div class="htoolbar-sep"></div>
+    <div class="btn-pair">
+      <button class="ibtn ibtn-icon" id="btnUndo" title="Undo (⌘Z)" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+      </button>
+      <button class="ibtn ibtn-icon" id="btnRedo" title="Redo (⌘Y)" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
+      </button>
+    </div>
+    <div class="search-box">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search…">
+    </div>
+    <select class="lang-sel" id="langSel" aria-label="Language">
+      <option value="en">EN</option>
+      <option value="ko">한국어</option>
+    </select>
+    <button class="ibtn ibtn-icon dark-mode-btn" id="darkModeBtn" title="Dark mode" aria-label="Dark mode">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.3 14.2A8.5 8.5 0 0 1 9.8 3.7 8.5 8.5 0 1 0 20.3 14.2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════ MORE DROPDOWN ════════════════════════ -->
+<div class="dropdown" id="moreDd">
+  <div class="dd-section" id="t-manageSection">Manage</div>
+  <div class="dd-item" id="dd-roadmapSettings">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V20.3h-3v-.08A1.7 1.7 0 0 0 10.68 18.66a1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7.02 15a1.7 1.7 0 0 0-1.56-1.03h-.08v-3h.08A1.7 1.7 0 0 0 7.02 9.94a1.7 1.7 0 0 0-.34-1.88l-.06-.06L8.74 5.88l.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1.03-1.56V4.64h3v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 8l-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03h.08v3h-.08A1.7 1.7 0 0 0 19.4 15z"/></svg></div>
+    <span id="t-roadmapSettings">Roadmap settings</span>
+  </div>
+  <div class="dd-item" id="dd-cats">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+    <span id="t-manageCats">Categories</span>
+  </div>
+  <div class="dd-item" id="dd-items">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+    <span id="t-manageItems">Items</span>
+  </div>
+  <div class="dd-item" id="dd-ms">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <span id="t-manageMs">Milestones</span>
+  </div>
+  <div class="dd-item" id="dd-statuses">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></div>
+    <span id="t-statuses">Statuses</span>
+  </div>
+  <div class="dd-item" id="dd-badges">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+    <span id="t-badges">Badges</span>
+  </div>
+
+  <div class="dd-sep"></div>
+  <div class="dd-section" id="t-dataSection">Data & Export</div>
+  <div class="dd-item" id="dd-json">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+    <span id="t-json">JSON Editor</span>
+  </div>
+  <div class="dd-item" id="dd-import">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+    <span id="t-import">Import JSON</span>
+  </div>
+  <div class="dd-item" id="dd-expJSON">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+    Export JSON
+  </div>
+  <div class="dd-item" id="dd-expHTML">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+    Export HTML
+  </div>
+  <div class="dd-item" id="dd-copyHTML">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+    <span id="t-copyHTML">Copy HTML</span>
+  </div>
+  <div class="dd-item" id="dd-expPNG">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
+    Export PNG
+  </div>
+  <div class="dd-sep"></div>
+  <div class="dd-item" id="dd-about">
+    <div class="dd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+    <span>About</span>
+  </div>
+  <div class="dd-sep"></div>
+  <div class="dd-item danger" id="dd-reset">
+    <div class="dd-icon" style="background:#fee2e2;"><svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></div>
+    <span id="t-reset">New Roadmap</span>
+  </div>
+</div>
+
+<!-- ════════════════════════ BODY ════════════════════════ -->
+<div id="appContent" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
+
+<!-- ════════════════════════ STATUS BAR ════════════════════════ -->
+<div class="statusbar" id="statusbar">
+  <span id="sbInfo">Ready</span>
+  <span id="sbCounts"></span>
+  <span style="margin-left:auto;font-size:10px;color:#e5e7eb">v1.0</span>
+</div>
+
+<!-- ════════════════════════ MODAL ════════════════════════ -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="mhd">
+      <h3 id="modalTitle"></h3>
+      <button class="mclose" id="modalClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body mbody" id="modalBody"></div>
+    <div class="mfoot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════ CONTEXT MENU ════════════════════════ -->
+<div class="ctx" id="ctxMenu"></div>
+
+<!-- ════════════════════════ TOAST ════════════════════════ -->
+<div class="toast-z" id="toastZone"></div>
+
+<!-- hidden file input -->
+<input type="file" id="fileIn" accept=".json" class="hidden">
+
+<script>
+/* ─────────────────────────────────────
+   SHAPE SVG
+───────────────────────────────────── */
+const MS_SHAPES=['flag','diamond','pin','rocket','star','check','circle'];
+const BDG_SHAPES=['star','heart','fire','zap','shield','tag','circle'];
+
+function shapeSVG(shape, color='#F59E0B', sz=15){
+  const s={
+    flag:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}" stroke="${color}" stroke-width="1"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15" stroke="${color}" stroke-width="2"/></svg>`,
+    diamond:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><rect x="6" y="6" width="12" height="12" rx="1" transform="rotate(45 12 12)"/></svg>`,
+    pin:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>`,
+    rocket:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-3.05 11a22.77 22.77 0 0 1-3.95 2z"/><path d="M9 12H4s.5-3 2.5-4.5"/><path d="M12 15v5s3-.5 4.5-2.5"/></svg>`,
+    star:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    check:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><circle cx="12" cy="12" r="10"/><path d="m8 12 2.5 2.5L16 9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    circle:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><circle cx="12" cy="12" r="9"/></svg>`,
+    heart:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    fire:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M8.5 14.5A3.5 3.5 0 0 0 12 18a3.5 3.5 0 0 0 3.5-3.5c0-2-1.5-3.5-2.5-4.5-.5-.5-1-1.5-1-2.5C10 9 8 11.5 8 14c0 .17.02.34.05.5z"/><path d="M12 2c1 3 4 4.5 4 8.5a7.5 7.5 0 1 1-15 0c0-4.5 4-7.5 5-9.5 1 2 2 3.5 3 4 1-1 2-2 3-3z"/></svg>`,
+    zap:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+    shield:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    tag:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="#fff"/></svg>`,
+    square:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>`,
+    triangle:`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="${color}"><polygon points="12 3 22 21 2 21"/></svg>`,
+  };
+  return s[shape]||s.circle;
+}
+
+const SVG={
+  edit:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  trash:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
+  plus:`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  arrow:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>`,
+};
+
+/* ─────────────────────────────────────
+   I18N
+───────────────────────────────────── */
+const MSGS={
+  en:{
+    manageSection:'Manage',addSection:'Add',dataSection:'Data & Export',
+    roadmapSettings:'Roadmap settings',manageCats:'Categories',manageItems:'Items',manageMs:'Milestones',
+    todayDateLine:'Today date line',statusLegend:'Status legend',themePalette:'Theme palette',themeHint:'Applies matching category colors and darker item progress fills.',
+    applyTheme:'Apply theme',themeDefault:'Default',themeViolet:'Violet',themeOcean:'Ocean',themeForest:'Forest',themeSunset:'Sunset',themeMacaron:'Pastel Macaron',themeRainbow:'Rainbow',themeDarkchic:'Dark & Chic',
+    fill:'Fill',progressFillPattern:'Progress fill pattern',fillColor:'Fill color',solid:'Solid',diagonal:'Diagonal',horizontalLines:'Horizontal lines',verticalLines:'Vertical lines',dots:'Dots',grid:'Grid',gradient:'Gradient',
+    addCat:'Category',addItem:'Item',addMs:'Milestone',
+    statuses:'Statuses',badges:'Badges',json:'JSON Editor',
+    import:'Import JSON',reset:'New Roadmap',
+    editSection:'Edit',exportSection:'Export',
+    save:'Save',cancel:'Cancel',delete:'Delete',close:'Close',apply:'Apply',add:'Add',
+    editCat:'Edit Category',newCat:'New Category',
+    editItem:'Edit Item',newItem:'New Item',
+    editMs:'Edit Milestone',newMs:'New Milestone',
+    id:'ID',name:'Name',subtitle:'Subtitle',description:'Description',color:'Color',
+    link:'Link (URL)',order:'Order',start:'Start Date',end:'End Date',
+    priority:'Priority',status:'Status',badge:'Badges',progress:'Progress %',
+    date:'Date',pattern:'Pattern',border:'Border',completed:'Marks as Completed',
+    shape:'Shape',text:'Text',type:'Type',lineVisible:'Show Line',lineStyle:'Line Style',
+    shape_flag:'Flag',shape_diamond:'Diamond',shape_pin:'Pin',shape_rocket:'Rocket',shape_star:'Star',shape_check:'Check',shape_circle:'Circle',
+    shape_heart:'Heart',shape_fire:'Fire',shape_zap:'Zap (Lightning)',shape_shield:'Shield',shape_tag:'Tag',shape_square:'Square',shape_triangle:'Triangle',
+    yes:'Yes',no:'No',show:'Show',hide:'Hide',textColor:'Text Color',opacity:'Opacity',
+    none:'None',low:'Low',medium:'Medium',high:'High',critical:'Critical',
+    commaHint:'Comma-separated',subtitles:'Subtitles',
+    confirmDelete:'Delete this? This cannot be undone.',
+    importOk:'Imported successfully',importErr:'Import failed',exportOk:'Exported',copyHTML:'Copy HTML',copyOk:'HTML copied',
+    addFirstItem:'Add your first item',firstItemHelp:'Start by naming a category. You can then add the first timeline item.',firstCategory:'Category name',createItem:'Create item',
+    jsonEditorTitle:'JSON Editor',manageStatuses:'Manage Statuses',manageBadges:'Manage Badges',
+    cats:'Categories',catsItems:'Categories / Items',items:'Items',milestones:'Milestones',
+    searchPlaceholder:'Search…',
+    onboardTitle:'Build your roadmap',
+    onboardSub:'Create a visual timeline that both you and your AI agents can read and edit.',
+    onboardQ:'How do you want to start?',
+    optNewTitle:'Start from scratch',optNewSub:'Create an empty roadmap and add items manually.',
+    optTmplTitle:'Use a template',optTmplSub:'Pick a starting point based on your project type.',
+    optImportTitle:'Import JSON',optImportSub:'Load an existing roadmap.json file.',
+    tmplProduct:'Product Roadmap',tmplProduct_sub:'Quarters, features, releases',
+    tmplTech:'Tech Roadmap',tmplTech_sub:'Infrastructure, migrations, APIs',
+    tmplStartup:'Startup',tmplStartup_sub:'MVP, funding, growth milestones',
+    tmplCustom:'Blank Canvas',tmplCustom_sub:'No preset — fully custom',
+    createRoadmap:'Create Roadmap',pickTemplate:'Choose Template',back:'← Back',
+  },
+  ko:{
+    manageSection:'데이터 관리',addSection:'새로 추가',dataSection:'데이터 및 내보내기',
+    roadmapSettings:'로드맵 관리 설정',manageCats:'카테고리 관리',manageItems:'항목 관리',manageMs:'마일스톤 관리',
+    todayDateLine:'오늘 날짜선',statusLegend:'상태 범례',themePalette:'테마 팔레트',themeHint:'카테고리 색상과 더 진한 아이템 진행률 색상에 적용됩니다.',
+    applyTheme:'테마 적용',themeDefault:'기본',themeViolet:'바이올렛',themeOcean:'오션',themeForest:'포레스트',themeSunset:'선셋',themeMacaron:'파스텔 마카롱',themeRainbow:'레인보우',themeDarkchic:'다크 앤 시크',
+    fill:'채우기',progressFillPattern:'진행률 채우기 패턴',fillColor:'채우기 색상',solid:'솔리드',diagonal:'다이아고널',horizontalLines:'가로줄',verticalLines:'세로줄',dots:'도트',grid:'격자',gradient:'그라데이션',
+    addCat:'카테고리',addItem:'항목',addMs:'마일스톤',
+    statuses:'상태 관리',badges:'배지 관리',json:'JSON 에디터',
+    import:'JSON 가져오기',reset:'새 로드맵',
+    editSection:'편집',exportSection:'내보내기',
+    save:'저장',cancel:'취소',delete:'삭제',close:'닫기',apply:'적용',add:'추가',
+    editCat:'카테고리 편집',newCat:'새 카테고리',
+    editItem:'항목 편집',newItem:'새 항목',
+    editMs:'마일스톤 편집',newMs:'새 마일스톤',
+    id:'ID',name:'이름',subtitle:'부제목',description:'설명',color:'색상',
+    link:'링크 (URL)',order:'순서',start:'시작일',end:'종료일',
+    priority:'우선순위',status:'상태',badge:'배지',progress:'진행률 %',
+    date:'날짜',pattern:'패턴',border:'테두리',completed:'완료로 표시',
+    shape:'모양',text:'텍스트',type:'유형',lineVisible:'라인 표시',lineStyle:'라인 스타일',
+    shape_flag:'깃발 (Flag)',shape_diamond:'다이아몬드 (Diamond)',shape_pin:'핀 (Pin)',shape_rocket:'로켓 (Rocket)',shape_star:'별 (Star)',shape_check:'체크 (Check)',shape_circle:'원 (Circle)',
+    shape_heart:'하트 (Heart)',shape_fire:'불/핫이슈 (Fire)',shape_zap:'번개 (Zap)',shape_shield:'방패 (Shield)',shape_tag:'태그 (Tag)',shape_square:'사각형 (Square)',shape_triangle:'삼각형 (Triangle)',
+    yes:'예',no:'아니오',show:'보이기',hide:'안 보이기',textColor:'글자 색상',opacity:'불투명도',
+    none:'표시 없음',low:'낮음',medium:'보통',high:'높음',critical:'긴급',
+    commaHint:'쉼표로 구분',subtitles:'부제목 목록',
+    confirmDelete:'삭제하시겠습니까? 되돌릴 수 없습니다.',
+    importOk:'가져오기 완료',importErr:'가져오기 실패',exportOk:'내보내기 완료',copyHTML:'HTML 복사',copyOk:'HTML을 복사했습니다',
+    addFirstItem:'첫 항목 추가',firstItemHelp:'먼저 카테고리 이름을 정한 뒤 첫 타임라인 항목을 추가하세요.',firstCategory:'카테고리 이름',createItem:'항목 만들기',
+    jsonEditorTitle:'JSON 에디터',manageStatuses:'상태 관리',manageBadges:'배지 관리',
+    cats:'카테고리',catsItems:'카테고리 / 항목',items:'항목',milestones:'마일스톤',
+    searchPlaceholder:'검색…',
+    onboardTitle:'로드맵을 만들어보세요',
+    onboardSub:'사람과 AI 에이전트가 함께 읽고 수정할 수 있는 비주얼 타임라인입니다.',
+    onboardQ:'어떻게 시작하시겠어요?',
+    optNewTitle:'처음부터 시작',optNewSub:'빈 로드맵을 만들고 항목을 직접 추가합니다.',
+    optTmplTitle:'템플릿 사용',optTmplSub:'프로젝트 유형에 맞는 템플릿을 선택합니다.',
+    optImportTitle:'JSON 가져오기',optImportSub:'기존 roadmap.json 파일을 불러옵니다.',
+    tmplProduct:'프로덕트 로드맵',tmplProduct_sub:'분기, 기능, 릴리즈',
+    tmplTech:'테크 로드맵',tmplTech_sub:'인프라, 마이그레이션, API',
+    tmplStartup:'스타트업',tmplStartup_sub:'MVP, 투자, 성장 마일스톤',
+    tmplCustom:'빈 캔버스',tmplCustom_sub:'프리셋 없이 자유롭게',
+    createRoadmap:'로드맵 만들기',pickTemplate:'템플릿 선택',back:'← 뒤로',
+  }
+};
+
+let lang='en';
+const t=k=>(MSGS[lang]&&MSGS[lang][k])||MSGS.en[k]||k;
+
+const I18N_IDS=['manageSection','dataSection','roadmapSettings','manageCats','manageItems','manageMs','statuses','badges','json','import','reset','copyHTML','editSection','exportSection'];
+function applyI18n(){
+  I18N_IDS.forEach(k=>{const el=document.getElementById('t-'+k);if(el)el.textContent=t(k);});
+  const si=document.getElementById('searchInput');
+  if(si) si.placeholder=t('searchPlaceholder');
+}
+
+/* ─────────────────────────────────────
+   UTILS
+───────────────────────────────────── */
+const uid=(p='')=>p+Math.random().toString(36).slice(2,9);
+const pd=s=>{if(!s)return null;const d=new Date(s+'T00:00:00');return isNaN(d)?null:d;};
+const fd=d=>{if(!d)return '';if(typeof d==='string')return d;return d.toISOString().split('T')[0];};
+const addD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r;};
+const diffD=(a,b)=>Math.round((b-a)/86400000);
+const esc=s=>(!s?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'));
+function safeLinkHref(value){
+  if(typeof value!=='string'||!value.trim())return null;
+  try{
+    const u=new URL(value,window.location.href);
+    return ['http:','https:','mailto:'].includes(u.protocol)?value:null;
+  }catch{return null;}
+}
+const clone=o=>JSON.parse(JSON.stringify(o));
+const THEME_PALETTES={
+  default:['#6366F1','#10B981','#F59E0B','#3B82F6'],
+  violet:['#6366F1','#8B5CF6','#A855F7','#4F46E5'],
+  ocean:['#0284C7','#0EA5E9','#06B6D4','#2563EB'],
+  forest:['#059669','#10B981','#65A30D','#0F766E'],
+  sunset:['#EA580C','#F59E0B','#EF4444','#EC4899'],
+  macaron:['#F49AC2','#A7D8F0','#B8E0A5','#F9D99A','#C9B6E4'],
+  rainbow:['#EF4444','#F97316','#EAB308','#22C55E','#3B82F6','#8B5CF6','#EC4899'],
+  darkchic:['#312E81','#155E75','#14532D','#7F1D1D','#4C1D95'],
+};
+function mixHex(base,withColor='#FFFFFF',amount=.55){
+  const a=(base||'#6366F1').replace('#',''),b=withColor.replace('#','');
+  if(a.length!==6||b.length!==6)return base||'#6366F1';
+  const n=i=>Math.round(parseInt(a.slice(i,i+2),16)*(1-amount)+parseInt(b.slice(i,i+2),16)*amount).toString(16).padStart(2,'0');
+  return `#${n(0)}${n(2)}${n(4)}`;
+}
+function darkenHex(color){return mixHex(color,'#111827',.18);}
+function normalizePattern(pattern){
+  if(pattern==='stripe')return'diagonal';
+  if(['solid','diagonal','horizontal','vertical','dot','grid','gradient'].includes(pattern))return pattern;
+  return'solid';
+}
+function applyThemePreset(rm,preset){
+  const colors=THEME_PALETTES[preset]||THEME_PALETTES.violet;
+  rm.theme={...(rm.theme||{}),preset};
+  (rm.categories||[]).forEach((cat,index)=>{
+    cat.color=colors[index%colors.length];
+    (cat.items||[]).forEach(item=>{item.fillColor=cat.color;delete item.progressColor;delete item.barColor;});
+  });
+}
+
+/* ─────────────────────────────────────
+   TEMPLATES
+───────────────────────────────────── */
+function buildTemplate(type){
+  const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+  const base={
+    version:'1.0',
+    roadmap:{
+      id:uid('rm-'),title:'',subtitle:'',description:'',
+      startDate:fd(new Date(y,m-1,1)),endDate:fd(new Date(y,m+8,0)),
+      locale:lang,scale:'month',showToday:true,showStatusLegend:true,theme:{preset:'default',override:{}},
+      statuses:[
+        {id:'planned',    name:'Planned',     color:'#94A3B8',pattern:'solid', border:'dashed',completed:false},
+        {id:'in-progress',name:'In Progress', color:'#6366F1',pattern:'diagonal',border:'solid', completed:false},
+        {id:'done',       name:'Done',        color:'#10B981',pattern:'solid', border:'solid', completed:true },
+        {id:'blocked',    name:'Blocked',     color:'#EF4444',pattern:'dot',   border:'solid', completed:false},
+        {id:'on-hold',    name:'On Hold',     color:'#F59E0B',pattern:'solid', border:'dashed',completed:false},
+      ],
+      badges:[
+        {id:'important',type:'shape',shape:'star', color:{type:'solid',value:'#F59E0B'}},
+        {id:'critical', type:'shape',shape:'flag', color:{type:'solid',value:'#EF4444'}},
+        {id:'beta',     type:'text', text:'BETA',  color:{type:'solid',value:'#f87171'}},
+        {id:'new',      type:'text', text:'NEW',   color:{type:'solid',value:'#3B82F6'}},
+      ],
+      categories:[],milestones:[],metadata:{}
+    }
+  };
+
+  if(type==='product'){
+    base.roadmap.title='Product Roadmap';
+    base.roadmap.categories=[
+      {id:'core',    name:'Core Features', subtitle:'Q1–Q2',     color:'#6366F1',order:0,items:[
+        {id:'auth',   name:'Auth & Permissions',subtitles:['OAuth 2.0'],priority:'critical',statusId:'done',       start:fd(new Date(y,m-2,1)),end:fd(new Date(y,m-1,15)),badges:[], progress:100},
+        {id:'api-v2', name:'API v2',            subtitles:['REST & GraphQL'],priority:'high',statusId:'in-progress',start:fd(new Date(y,m-1,1)),end:fd(new Date(y,m+2,28)),badges:['important'],progress:55},
+        {id:'dash',   name:'Dashboard',         subtitles:['Analytics view'],priority:'medium',statusId:'planned',  start:fd(new Date(y,m+1,1)),end:fd(new Date(y,m+3,30)),badges:[],progress:0},
+      ]},
+      {id:'growth',  name:'Growth',         subtitle:'Q2–Q3',     color:'#8B5CF6',order:1,items:[
+        {id:'onboard',name:'Onboarding Flow',  subtitles:['New user UX'],priority:'high',statusId:'planned',start:fd(new Date(y,m+2,1)),end:fd(new Date(y,m+4,30)),badges:['new'],progress:0},
+        {id:'billing',name:'Billing & Plans',  subtitles:['Stripe integration'],priority:'medium',statusId:'planned',start:fd(new Date(y,m+3,1)),end:fd(new Date(y,m+5,30)),badges:[],progress:0},
+      ]},
+      {id:'infra',   name:'Infrastructure', subtitle:'Ongoing',   color:'#10B981',order:2,items:[
+        {id:'k8s',    name:'K8s Migration',    subtitles:['Container orchestration'],priority:'critical',statusId:'in-progress',start:fd(new Date(y,m,1)),end:fd(new Date(y,m+3,30)),badges:['important'],progress:35},
+        {id:'monitor',name:'Monitoring',        subtitles:['Observability stack'],priority:'low',statusId:'planned',start:fd(new Date(y,m+2,1)),end:fd(new Date(y,m+4,30)),badges:[],progress:0},
+      ]},
+    ];
+    base.roadmap.milestones=[
+      {id:'beta',name:'Beta Launch',date:fd(new Date(y,m+2,1)),description:'',marker:{shape:'diamond',color:'#6366F1',size:16},line:{visible:true,style:'dashed',color:'#6366F1'},labelPosition:'top'},
+      {id:'ga',  name:'GA Release', date:fd(new Date(y,m+5,1)),description:'',marker:{shape:'star',   color:'#EF4444',size:18},line:{visible:true,style:'solid', color:'#EF4444'},labelPosition:'top'},
+    ];
+  } else if(type==='tech'){
+    base.roadmap.title='Tech Roadmap';
+    base.roadmap.subtitle='Building the foundation for what comes next';
+    base.roadmap.categories=[
+      {id:'backend',name:'Backend',   subtitle:'API & Services', color:'#6366F1',order:0,items:[
+        {id:'api3', name:'API v3',         subtitles:['gRPC + REST'],priority:'high',statusId:'in-progress',start:fd(new Date(y,m,1)),end:fd(new Date(y,m+3,30)),badges:['important'],progress:40},
+        {id:'cache',name:'Cache Layer',    subtitles:['Redis cluster'],priority:'medium',statusId:'planned',start:fd(new Date(y,m+2,1)),end:fd(new Date(y,m+4,30)),badges:[],progress:0},
+      ]},
+      {id:'devops',name:'DevOps',     subtitle:'CI/CD & Infra',  color:'#10B981',order:1,items:[
+        {id:'cicd', name:'CI/CD Pipeline', subtitles:['GitHub Actions'],priority:'critical',statusId:'in-progress',start:fd(new Date(y,m-1,1)),end:fd(new Date(y,m+1,30)),badges:[],progress:70},
+        {id:'iac',  name:'IaC Migration',  subtitles:['Terraform'],priority:'high',statusId:'planned',start:fd(new Date(y,m+1,1)),end:fd(new Date(y,m+4,30)),badges:['new'],progress:0},
+      ]},
+      {id:'data',  name:'Data',       subtitle:'Pipelines & ML', color:'#F59E0B',order:2,items:[
+        {id:'dwh',  name:'Data Warehouse',  subtitles:['Snowflake migration'],priority:'high',statusId:'planned',start:fd(new Date(y,m+2,1)),end:fd(new Date(y,m+5,30)),badges:[],progress:0},
+      ]},
+    ];
+    base.roadmap.milestones=[
+      {id:'m1',name:'Infra Complete',date:fd(new Date(y,m+3,1)),description:'',marker:{shape:'diamond',color:'#10B981',size:16},line:{visible:true,style:'dashed',color:'#10B981'},labelPosition:'top'},
+    ];
+  } else if(type==='startup'){
+    base.roadmap.title='Startup Roadmap';
+    base.roadmap.categories=[
+      {id:'mvp',   name:'MVP',        subtitle:'Core Product',  color:'#6366F1',order:0,items:[
+        {id:'app',  name:'App v1',          subtitles:['Core features'],priority:'critical',statusId:'in-progress',start:fd(new Date(y,m-2,1)),end:fd(new Date(y,m+1,30)),badges:['important'],progress:65},
+        {id:'landing',name:'Landing Page',  subtitles:['Marketing site'],priority:'high',statusId:'done',start:fd(new Date(y,m-3,1)),end:fd(new Date(y,m-2,15)),badges:[],progress:100},
+      ]},
+      {id:'biz',   name:'Business',   subtitle:'GTM & Growth',  color:'#EC4899',order:1,items:[
+        {id:'seed', name:'Seed Round',      subtitles:['$2M target'],priority:'critical',statusId:'planned',start:fd(new Date(y,m+1,1)),end:fd(new Date(y,m+3,30)),badges:['important'],progress:0},
+        {id:'gtm',  name:'Go-to-Market',   subtitles:['Launch campaign'],priority:'high',statusId:'planned',start:fd(new Date(y,m+2,1)),end:fd(new Date(y,m+4,30)),badges:['new'],progress:0},
+      ]},
+    ];
+    base.roadmap.milestones=[
+      {id:'launch',name:'Public Launch',date:fd(new Date(y,m+2,1)),description:'',marker:{shape:'star',color:'#6366F1',size:18},line:{visible:true,style:'dashed',color:'#6366F1'},labelPosition:'top'},
+      {id:'series',name:'Series A',date:fd(new Date(y,m+5,1)),description:'',marker:{shape:'diamond',color:'#EC4899',size:16},line:{visible:true,style:'solid',color:'#EC4899'},labelPosition:'top'},
+    ];
+  } else {
+    // blank
+    base.roadmap.title='My Roadmap';
+  }
+  return base;
+}
+
+/* ─────────────────────────────────────
+   STATE
+───────────────────────────────────── */
+const STORE_PREFIX='ai-roadmap-v2';
+const MAX_H=80;
+let S=null,hist=[],histIdx=-1,searchQ='',tlScale='month',desktopPath=null,desktopSavedSnapshot=null;
+
+function getStoreKey(){
+  try{
+    const p=(window.location&&window.location.pathname)?window.location.pathname:'default';
+    return `${STORE_PREFIX}:${p}`;
+  }catch(e){
+    return STORE_PREFIX;
+  }
+}
+
+function getEmbeddedData(){
+  try{
+    const el=document.getElementById('__ROADMAP_EMBEDDED_DATA__');
+    if(el&&el.textContent.trim()){
+      const p=JSON.parse(el.textContent);
+      if(p&&p.roadmap)return p;
+    }
+  }catch(e){}
+  if(window.__ROADMAP_EMBEDDED__&&window.__ROADMAP_EMBEDDED__.roadmap){
+    return window.__ROADMAP_EMBEDDED__;
+  }
+  return null;
+}
+
+function loadState(){
+  const storeKey=getStoreKey();
+  const embedded=getEmbeddedData();
+  try{
+    if(embedded){
+      S=clone(embedded);
+      try{localStorage.setItem(storeKey,JSON.stringify(S));}catch(e){}
+    }else{
+      let raw=localStorage.getItem(storeKey);
+      if(raw===null){
+        raw=localStorage.getItem(STORE_PREFIX);
+      }
+      if(raw==='__RESET__'){
+        S=null;
+      }else if(raw){
+        S=JSON.parse(raw);
+        if(!S?.roadmap)throw 0;
+      }else{
+        S=null;
+      }
+    }
+  }catch(e){
+    S=embedded?clone(embedded):null;
+  }
+  if(S){
+    hist=[clone(S)];
+    histIdx=0;
+    if(S.roadmap.scale)tlScale=S.roadmap.scale;
+    if(S.roadmap.locale)lang=S.roadmap.locale;
+  }
+}
+
+function saveState(){
+  try{
+    if(S)localStorage.setItem(getStoreKey(),JSON.stringify(S));
+  }catch(e){}
+}
+
+function pushHist(){
+  histIdx++;
+  hist=hist.slice(0,histIdx);
+  hist.push(clone(S));
+  if(hist.length>MAX_H){hist.shift();histIdx--;}
+  saveState();syncUR();render();
+}
+
+function undo(){if(histIdx<=0)return;histIdx--;S=clone(hist[histIdx]);saveState();syncUR();render();}
+function redo(){if(histIdx>=hist.length-1)return;histIdx++;S=clone(hist[histIdx]);saveState();syncUR();render();}
+
+function syncUR(){
+  document.getElementById('btnUndo').disabled=histIdx<=0;
+  document.getElementById('btnRedo').disabled=histIdx>=hist.length-1;
+}
+
+/* ─────────────────────────────────────
+   VALIDATION
+───────────────────────────────────── */
+function validate(data){
+  const err=[];
+  const add=(path,code)=>err.push({path,code});
+  const has=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
+  const object=(v,path)=>{if(!v||typeof v!=='object'||Array.isArray(v)){add(path,'INVALID_TYPE');return false;}return true;};
+  // Imports stay forward-compatible: unknown optional/legacy fields are retained.
+  // Required fields and values that affect timeline integrity are still checked below.
+  const allowed=()=>{};
+  const required=(o,keys,path)=>keys.forEach(k=>{if(!has(o,k))add(path,'MISSING_'+k.toUpperCase());});
+  const id=v=>typeof v==='string'&&/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(v);
+  const name=v=>typeof v==='string'&&/\S/.test(v);
+  const color=v=>typeof v==='string'&&/^#[0-9A-Fa-f]{6}$/.test(v);
+  const date=v=>{
+    if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;
+    const d=pd(v);if(!d)return false;
+    const local=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    return local===v;
+  };
+  const enumOf=(v,values)=>values.includes(v);
+  if(!object(data,'/'))return{valid:false,errors:err};
+  allowed(data,['version','roadmap'],'/');required(data,['version','roadmap'],'/');
+  if(data.version!=='1.0')add('/version','INVALID_VERSION');
+  const rm=data.roadmap;
+  if(!object(rm,'/roadmap'))return{valid:false,errors:err};
+  allowed(rm,['id','title','subtitle','description','startDate','endDate','rangeLocked','locale','scale','showToday','showStatusLegend','darkMode','theme','statuses','badges','categories','milestones','metadata'],'/roadmap');
+  required(rm,['id','title','statuses','badges','categories','milestones'],'/roadmap');
+  if(!id(rm.id))add('/roadmap/id','INVALID_ID');if(!name(rm.title))add('/roadmap/title','INVALID_NAME');
+  ['subtitle','description'].forEach(k=>{if(has(rm,k)&&typeof rm[k]!=='string')add(`/roadmap/${k}`,'INVALID_TYPE');});
+  ['startDate','endDate'].forEach(k=>{if(has(rm,k)&&!date(rm[k]))add(`/roadmap/${k}`,'INVALID_DATE');});
+  if(has(rm,'rangeLocked')&&typeof rm.rangeLocked!=='boolean')add('/roadmap/rangeLocked','INVALID_TYPE');
+  if(rm.rangeLocked===true&&(!has(rm,'startDate')||!has(rm,'endDate')))add('/roadmap','LOCKED_RANGE_REQUIRES_DATES');
+  if(date(rm.startDate)&&date(rm.endDate)&&pd(rm.startDate)>pd(rm.endDate))add('/roadmap','START_AFTER_END');
+  if(has(rm,'locale')&&!enumOf(rm.locale,['ko','en']))add('/roadmap/locale','INVALID_LOCALE');
+  if(has(rm,'scale')&&!enumOf(rm.scale,['auto','week','month','quarter']))add('/roadmap/scale','INVALID_SCALE');
+  ['showToday','showStatusLegend','darkMode'].forEach(k=>{if(has(rm,k)&&typeof rm[k]!=='boolean')add(`/roadmap/${k}`,'INVALID_TYPE');});
+  if(has(rm,'metadata')&&!object(rm.metadata,'/roadmap/metadata')){};
+  if(has(rm,'theme')){if(!object(rm.theme,'/roadmap/theme')){}else{allowed(rm.theme,['preset','override'],'/roadmap/theme');required(rm.theme,['preset'],'/roadmap/theme');if(!enumOf(rm.theme.preset,Object.keys(THEME_PALETTES)))add('/roadmap/theme/preset','INVALID_THEME');if(has(rm.theme,'override')&&(!object(rm.theme.override,'/roadmap/theme/override')||Object.keys(rm.theme.override).length))add('/roadmap/theme/override','INVALID_OVERRIDE');}}
+  ['statuses','badges','categories','milestones'].forEach(k=>{if(!Array.isArray(rm[k]))add(`/roadmap/${k}`,'INVALID_TYPE');});
+  if(!Array.isArray(rm.statuses)||!Array.isArray(rm.badges)||!Array.isArray(rm.categories)||!Array.isArray(rm.milestones))return{valid:false,errors:err};
+  const ids=new Set();
+  const unique=(list,path)=>{const seen=new Set();list.forEach((x,i)=>{if(!id(x?.id))add(`${path}/${i}/id`,'INVALID_ID');else if(seen.has(x.id))add(`${path}/${i}`,'DUPLICATE_ID');else seen.add(x.id);});return seen;};
+  const stIds=unique(rm.statuses,'/roadmap/statuses');
+  const bdIds=unique(rm.badges,'/roadmap/badges');
+  rm.statuses.forEach((s,i)=>{const p=`/roadmap/statuses/${i}`;if(!object(s,p))return;allowed(s,['id','name','color','pattern','progressPattern','border','completed','opacity','metadata'],p);required(s,['id','name','color','pattern','border'],p);if(!name(s.name))add(`${p}/name`,'INVALID_NAME');if(!color(s.color))add(`${p}/color`,'INVALID_COLOR');if(!enumOf(s.pattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient']))add(`${p}/pattern`,'INVALID_PATTERN');if(has(s,'progressPattern')&&!enumOf(s.progressPattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient']))add(`${p}/progressPattern`,'INVALID_PATTERN');if(!enumOf(s.border,['solid','dashed','dotted','none']))add(`${p}/border`,'INVALID_BORDER');if(has(s,'completed')&&typeof s.completed!=='boolean')add(`${p}/completed`,'INVALID_TYPE');if(has(s,'opacity')&&(typeof s.opacity!=='number'||s.opacity<0||s.opacity>1))add(`${p}/opacity`,'INVALID_OPACITY');});
+  rm.badges.forEach((b,i)=>{const p=`/roadmap/badges/${i}`;if(!object(b,p))return;allowed(b,['id','type','shape','text','color'],p);required(b,['id','type','color'],p);if(!enumOf(b.type,['shape','text']))add(`${p}/type`,'INVALID_BADGE_TYPE');if(b.type==='shape'&&!enumOf(b.shape,['flag','diamond','pin','rocket','star','check','circle','heart','fire','zap','shield','tag','square','triangle']))add(`${p}/shape`,'INVALID_SHAPE');if(b.type==='text'&&!name(b.text))add(`${p}/text`,'INVALID_TEXT');if(!object(b.color,`${p}/color`)||b.color.type!=='solid'||!color(b.color.value))add(`${p}/color`,'INVALID_COLOR');});
+  rm.categories.forEach((c,ci)=>{
+    const cp=`/roadmap/categories/${ci}`;if(!object(c,cp))return;allowed(c,['id','name','color','subtitle','link','order','items','metadata'],cp);required(c,['id','name','color','items'],cp);
+    if(!id(c.id)||ids.has(c.id))add(cp,!id(c.id)?'INVALID_ID':'DUPLICATE_ID');
+    ids.add(c.id);
+    if(!name(c.name))add(`${cp}/name`,'INVALID_NAME');if(!color(c.color))add(`${cp}/color`,'INVALID_COLOR');if(has(c,'subtitle')&&typeof c.subtitle!=='string')add(`${cp}/subtitle`,'INVALID_TYPE');if(has(c,'link')&&typeof c.link!=='string')add(`${cp}/link`,'INVALID_TYPE');if(has(c,'order')&&(!Number.isInteger(c.order)||c.order<0))add(`${cp}/order`,'INVALID_ORDER');if(!Array.isArray(c.items)){add(`${cp}/items`,'INVALID_TYPE');return;}
+    c.items.forEach((item,ii)=>{
+      const p=`${cp}/items/${ii}`;if(!object(item,p))return;allowed(item,['id','name','subtitles','description','start','end','statusId','priority','badges','progress','fillColor','link','metadata'],p);required(item,['id','name'],p);
+      if(!id(item.id)||ids.has(item.id))add(p,!id(item.id)?'INVALID_ID':'DUPLICATE_ID');
+      ids.add(item.id);
+      if(!name(item.name))add(`${p}/name`,'INVALID_NAME');if(has(item,'start')!==has(item,'end'))add(p,'DATE_PAIR_REQUIRED');if(has(item,'start')&&!date(item.start))add(`${p}/start`,'INVALID_DATE');if(has(item,'end')&&!date(item.end))add(`${p}/end`,'INVALID_DATE');if(date(item.start)&&date(item.end)&&pd(item.start)>pd(item.end))add(p,'START_AFTER_END');if(has(item,'statusId')&&(!id(item.statusId)||!stIds.has(item.statusId)))add(`${p}/statusId`,'INVALID_STATUS_REF');if(has(item,'priority')&&!enumOf(item.priority,['none','low','medium','high','critical']))add(`${p}/priority`,'INVALID_PRIORITY');if(has(item,'progress')&&(!Number.isInteger(item.progress)||item.progress<0||item.progress>100))add(`${p}/progress`,'INVALID_PROGRESS');if(has(item,'fillColor')&&!color(item.fillColor))add(`${p}/fillColor`,'INVALID_COLOR');if(has(item,'link')&&typeof item.link!=='string')add(`${p}/link`,'INVALID_TYPE');if(has(item,'subtitles')&&(!Array.isArray(item.subtitles)||item.subtitles.some(x=>typeof x!=='string')))add(`${p}/subtitles`,'INVALID_TYPE');if(has(item,'badges')&&(!Array.isArray(item.badges)||new Set(item.badges).size!==item.badges.length))add(`${p}/badges`,'INVALID_BADGES');(item.badges||[]).forEach(bid=>{if(!id(bid)||!bdIds.has(bid))add(p,'INVALID_BADGE_REF');});
+    });
+  });
+  unique(rm.milestones,'/roadmap/milestones');
+  rm.milestones.forEach((m,i)=>{const p=`/roadmap/milestones/${i}`;if(!object(m,p))return;allowed(m,['id','name','date','description','marker','line','labelPosition','metadata'],p);required(m,['id','name','date'],p);if(!name(m.name))add(`${p}/name`,'INVALID_NAME');if(!date(m.date))add(`${p}/date`,'INVALID_DATE');if(has(m,'labelPosition')&&m.labelPosition!=='top')add(`${p}/labelPosition`,'INVALID_LABEL_POSITION');});
+  return{valid:err.length===0,errors:err};
+}
+function validId(value){return /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(value);}
+function roadmapIds(){
+  const out=[];
+  (S?.roadmap?.categories||[]).forEach(c=>{out.push(c.id);(c.items||[]).forEach(i=>out.push(i.id));});
+  return out;
+}
+function validateNewRoadmapId(id,originalId){return validId(id)&&(!roadmapIds().includes(id)||id===originalId);}
+
+/* ─────────────────────────────────────
+   TIMELINE MATH
+───────────────────────────────────── */
+const CW={day:36,week:88,month:110,quarter:150,year:200};
+
+function getRange(){
+  const rm=S.roadmap;
+  let min=rm.rangeLocked&&rm.startDate?pd(rm.startDate):null,max=rm.rangeLocked&&rm.endDate?pd(rm.endDate):null;
+  const consider=ds=>{const d=pd(ds);if(!d)return;if(!min||d<min)min=new Date(d);if(!max||d>max)max=new Date(d);};
+  if(!rm.rangeLocked||!min||!max){
+    (rm.categories||[]).forEach(c=>(c.items||[]).forEach(i=>{consider(i.start);consider(i.end);}));
+    (rm.milestones||[]).forEach(m=>consider(m.date));
+  }
+  const td=new Date();td.setHours(0,0,0,0);
+  if(!min)min=addD(td,-30);
+  if(!max)max=addD(td,180);
+  if(min > max) { const tmp = min; min = max; max = tmp; }
+  return { min, max };
+}
+
+function pickScale(range){
+  if(tlScale!=='auto')return tlScale;
+  const days=diffD(range.min,range.max);
+  const months=Math.max(1,Math.ceil(days/30));
+  const viewport=document.getElementById('tlWrap')?.clientWidth||window.innerWidth||1200;
+  // Auto prioritizes the monthly view, then adapts only when the timeline would be cramped.
+  if(days<=56&&viewport>=1100)return'week';
+  if(months<=12&&viewport>=520)return'month';
+  if(months<=18&&viewport>=880)return'month';
+  return'quarter';
+}
+
+function makeCells(range,scale){
+  const cells=[];let cur=new Date(range.min);
+  const loc=lang==='ko'?'ko-KR':'en-US';
+  if(scale==='day'){
+    while(cur<=range.max){cells.push({start:new Date(cur),end:addD(cur,1),main:cur.getDate().toString(),sub:cur.toLocaleDateString(loc,{month:'short'})});cur=addD(cur,1);}
+  }else if(scale==='week'){
+    const dow=cur.getDay();cur=addD(cur,-(dow===0?6:dow-1));
+    while(cur<=range.max){const end=addD(cur,7);cells.push({start:new Date(cur),end,main:`${cur.toLocaleDateString(loc,{month:'short'})} ${cur.getDate()}`,sub:String(cur.getFullYear())});cur=end;}
+  }else if(scale==='month'){
+    cur=new Date(cur.getFullYear(),cur.getMonth(),1);
+    while(cur<=range.max){const end=new Date(cur.getFullYear(),cur.getMonth()+1,1);cells.push({start:new Date(cur),end,main:cur.toLocaleDateString(loc,{month:'short'}),sub:String(cur.getFullYear())});cur=end;}
+  }else if(scale==='quarter'){
+    const q=Math.floor(cur.getMonth()/3);cur=new Date(cur.getFullYear(),q*3,1);
+    while(cur<=range.max){const end=new Date(cur.getFullYear(),cur.getMonth()+3,1);cells.push({start:new Date(cur),end,main:`Q${Math.floor(cur.getMonth()/3)+1}`,sub:String(cur.getFullYear())});cur=end;}
+  }else if(scale==='year'){
+    cur=new Date(cur.getFullYear(),0,1);
+    while(cur<=range.max){const end=new Date(cur.getFullYear()+1,0,1);cells.push({start:new Date(cur),end,main:String(cur.getFullYear()),sub:''});cur=end;}
+  }
+  return cells;
+}
+
+function matchSearch(item,cat){
+  if(!searchQ)return true;
+  const q=searchQ.toLowerCase();
+  return[item.name,item.description,...(item.subtitles||[]),cat.name].some(s=>(s||'').toLowerCase().includes(q));
+}
+
+/* ─────────────────────────────────────
+   RENDER DECISION
+───────────────────────────────────── */
+function render(){
+  const content=document.getElementById('appContent');
+  const toolbar=document.getElementById('headerToolbar');
+  const sb=document.getElementById('statusbar');
+  applyDarkMode(Boolean(S?.roadmap?.darkMode));
+
+  if(!S){
+    // Keep the top toolbar available on the welcome screen so language and theme
+    // controls remain reachable before a roadmap is created.
+    toolbar.classList.remove('hidden');
+    sb.classList.add('hidden');
+    content.innerHTML='';
+    content.appendChild(buildOnboarding());
+    syncUR();
+    renderHeaderLegend();
+    return;
+  }
+
+  // has data — show timeline
+  toolbar.classList.remove('hidden');
+  sb.classList.remove('hidden');
+  renderTimeline(content);
+  renderHeaderLegend();
+  updateSB();
+  syncUR();
+  syncScaleButtons();
+  document.getElementById('rmTitle').value=S.roadmap.title||'';
+  document.getElementById('rmSubtitle').value=S.roadmap.subtitle||'';
+  document.getElementById('rmSubtitle').placeholder=lang==='ko'?'서브타이틀을 입력하세요':'Add a subtitle';
+}
+
+function renderHeaderLegend(){
+  const wrap=document.getElementById('headerLegend');
+  if(!wrap)return;
+  if(!S||S.roadmap.showStatusLegend===false||!(S.roadmap.statuses||[]).length){
+    wrap.innerHTML='';
+    return;
+  }
+  const rm=S.roadmap;
+  const legendItems=(rm.statuses||[]).map(s=>{
+    const pat=normalizePattern(s.pattern);
+    const bdr=s.border||'solid';
+    const patCls=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(pat)?`pat-${pat}`:'';
+    const bdrCls=['dashed','dotted','none'].includes(bdr)?`bdr-${bdr}`:'';
+    return `<div class="tl-legend-item" onclick="editStForm('${s.id}')" title="${t('editSection')}: ${esc(s.name)}">
+      <span class="tl-legend-swatch ${patCls} ${bdrCls}" style="background:${s.color};opacity:${s.opacity??1}"></span>
+      <span class="tl-legend-name">${esc(s.name)}</span>
+    </div>`;
+  }).join('');
+  wrap.innerHTML=`<div class="tl-legend-wrap">
+    <div class="tl-legend-label" onclick="openStatuses()" title="${t('manageStatuses')}">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg>
+      <span>${t('statusLegend')}</span>
+    </div>
+    <div class="tl-legend-items">${legendItems}</div>
+  </div>`;
+}
+
+function syncScaleButtons(){
+  document.querySelectorAll('#scaleGroup [data-sc]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.sc === (tlScale || 'auto'));
+  });
+}
+function applyDarkMode(enabled){
+  document.body.classList.toggle('dark-mode',enabled);
+  const btn=document.getElementById('darkModeBtn');
+  if(btn){
+    const label=enabled?(lang==='ko'?'라이트 모드':'Light mode'):(lang==='ko'?'다크 모드':'Dark mode');
+    btn.title=label;btn.setAttribute('aria-label',label);btn.setAttribute('aria-pressed',String(enabled));
+  }
+}
+
+/* ─────────────────────────────────────
+   ONBOARDING
+───────────────────────────────────── */
+let onboardStep=0;
+let selectedTemplate=null;
+
+function buildOnboarding(){
+  const wrap=document.createElement('div');
+  wrap.className='onboarding';
+  wrap.id='onboarding';
+  wrap.innerHTML=onboardStep===0?renderStep0():renderStep1();
+  return wrap;
+}
+
+function renderStep0(){
+  return`<div class="onboard-card">
+    <div class="onboard-hero">
+      <div class="onboard-hero-title">${t('onboardTitle')}</div>
+      <div class="onboard-hero-sub">${t('onboardSub')}</div>
+      <div class="onboard-preview">
+        <div class="preview-bar-row">
+          <span class="preview-label">Platform</span>
+          <div class="preview-bar" style="flex:1;background:#6366f1;max-width:55%"><span class="preview-bar-label">API v2</span></div>
+        </div>
+        <div class="preview-bar-row">
+          <span class="preview-label">Frontend</span>
+          <div class="preview-bar" style="flex:1;background:#8b5cf6;max-width:40%;margin-left:15%"><span class="preview-bar-label">Design System</span></div>
+        </div>
+        <div class="preview-bar-row">
+          <span class="preview-label">AI / ML</span>
+          <div class="preview-bar" style="flex:1;background:#f59e0b;max-width:35%;margin-left:35%"><span class="preview-bar-label">ML Pipeline</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="onboard-body">
+      <h3>${t('onboardQ')}</h3>
+      <p style="margin-bottom:20px"></p>
+      <div class="onboard-options">
+        <div class="onboard-option primary-opt" onclick="startBlank()">
+          <div class="onboard-opt-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="onboard-opt-text">
+            <div class="onboard-opt-title">${t('optNewTitle')}</div>
+            <div class="onboard-opt-sub">${t('optNewSub')}</div>
+          </div>
+          <div class="onboard-opt-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="onboard-option" onclick="goTemplates()">
+          <div class="onboard-opt-icon" style="background:#fef3c7;color:#d97706;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <div class="onboard-opt-text">
+            <div class="onboard-opt-title">${t('optTmplTitle')}</div>
+            <div class="onboard-opt-sub">${t('optTmplSub')}</div>
+          </div>
+          <div class="onboard-opt-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="onboard-option" onclick="triggerImport()">
+          <div class="onboard-opt-icon" style="background:#d1fae5;color:#059669;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>
+          <div class="onboard-opt-text">
+            <div class="onboard-opt-title">${t('optImportTitle')}</div>
+            <div class="onboard-opt-sub">${t('optImportSub')}</div>
+          </div>
+          <div class="onboard-opt-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderStep1(){
+  const templates=[
+    {id:'product',  title:t('tmplProduct'),  sub:t('tmplProduct_sub'),  cats:['Core','Growth','Infra'], colors:['#6366F1','#8B5CF6','#10B981']},
+    {id:'tech',     title:t('tmplTech'),     sub:t('tmplTech_sub'),     cats:['Backend','DevOps','Data'],colors:['#6366F1','#10B981','#F59E0B']},
+    {id:'startup',  title:t('tmplStartup'),  sub:t('tmplStartup_sub'),  cats:['MVP','Business'],         colors:['#6366F1','#EC4899']},
+    {id:'blank',    title:t('tmplCustom'),   sub:t('tmplCustom_sub'),   cats:[],                         colors:[]},
+  ];
+
+  const cards=templates.map(tmpl=>{
+    const previewBars=tmpl.cats.map((c,i)=>`
+      <div class="tmpl-preview-cat">
+        <div class="tmpl-preview-dot" style="background:${tmpl.colors[i]||'#e5e7eb'}"></div>
+        <span class="tmpl-preview-cat-name">${c}</span>
+      </div>
+      <div class="tmpl-preview-bar" style="background:${tmpl.colors[i]||'#e5e7eb'};width:${55+i*10}%;opacity:.7"></div>
+    `).join('');
+    const isSel=selectedTemplate===tmpl.id;
+    return`<div class="tmpl-card${isSel?' selected':''}" data-tmpl="${tmpl.id}" onclick="selectTemplate('${tmpl.id}')">
+      <div class="tmpl-card-title">${tmpl.title}</div>
+      <div class="tmpl-card-sub">${tmpl.sub}</div>
+      ${tmpl.cats.length?`<div class="tmpl-card-preview">${previewBars}</div>`:'<div style="margin-top:12px;height:40px;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:11px">Fully customizable</div>'}
+    </div>`;
+  }).join('');
+
+  return`<div class="onboard-card">
+    <div class="onboard-hero" style="padding-bottom:24px">
+      <div class="onboard-hero-title" style="font-size:22px">${t('pickTemplate')}</div>
+      <div class="onboard-hero-sub">Choose a starting point for your roadmap.</div>
+    </div>
+    <div class="onboard-body">
+      <div class="template-grid">${cards}</div>
+      <div class="onboard-actions">
+        <span class="onboard-back" onclick="backToStep0()">${t('back')}</span>
+        <button class="btn btn-ghost btn-sm" onclick="backToStep0()">${t('cancel')}</button>
+        <button class="btn btn-primary btn-sm" onclick="useTemplate()" ${selectedTemplate?'':'disabled'}>${t('createRoadmap')}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+window.startBlank=function(){
+  S=buildTemplate('blank');
+  hist=[clone(S)];histIdx=0;saveState();
+  render();toast(lang==='ko'?'새 로드맵이 만들어졌습니다':'Roadmap created','ok');
+};
+
+window.goTemplates=function(){
+  onboardStep=1;selectedTemplate=null;
+  const ob=document.getElementById('onboarding');
+  if(ob){ob.innerHTML=renderStep1();}
+};
+
+window.backToStep0=function(){
+  onboardStep=0;selectedTemplate=null;
+  const ob=document.getElementById('onboarding');
+  if(ob){ob.innerHTML=renderStep0();}
+};
+
+window.selectTemplate=function(id){
+  selectedTemplate=id;
+  document.querySelectorAll('.tmpl-card').forEach(el=>{
+    el.classList.toggle('selected',el.dataset.tmpl===id);
+  });
+  document.querySelector('.onboard-actions .btn-primary').disabled=false;
+};
+
+window.useTemplate=function(){
+  if(!selectedTemplate)return;
+  S=buildTemplate(selectedTemplate);
+  hist=[clone(S)];histIdx=0;saveState();
+  onboardStep=0;selectedTemplate=null;
+  render();toast(lang==='ko'?'템플릿이 적용되었습니다':'Template applied','ok');
+};
+
+window.triggerImport=function(){document.getElementById('fileIn').click();};
+
+/* ─────────────────────────────────────
+   TIMELINE RENDERER
+───────────────────────────────────── */
+function renderTimeline(container){
+  const rm=S.roadmap;
+  if(!(rm.categories||[]).length){
+    container.innerHTML=`<div class="empty-timeline"><div class="empty-timeline-card"><h2>${t('addFirstItem')}</h2><p>${t('firstItemHelp')}</p><button class="btn btn-primary" onclick="openFirstItemWizard()">${SVG.plus} ${t('addFirstItem')}</button></div></div>`;
+    return;
+  }
+  const range=getRange();
+  const scale=pickScale(range);
+  const cells=makeCells(range,scale);
+  const cw=CW[scale]||110;
+  const timeStart=cells[0]?.start||range.min;
+  const timeEnd=cells[cells.length-1]?.end||range.max;
+  const totD=diffD(timeStart,timeEnd)||1;
+  const totW=cells.length*cw;
+  const today=new Date();today.setHours(0,0,0,0);
+
+  function xPos(dateStr){
+    const d=pd(dateStr)||new Date(dateStr);
+    const pos=(diffD(timeStart,d)/totD)*totW;
+    return Math.max(0,Math.min(totW,pos));
+  }
+
+  /* ── header cells ── */
+  let hCells='';
+  cells.forEach(cell=>{
+    const isT=today>=cell.start&&today<cell.end;
+    hCells+=`<div class="tl-hcell${isT?' today-col':''}" style="width:${cw}px;min-width:${cw}px">
+      <span class="hm">${esc(cell.main)}</span>
+      ${cell.sub?`<span class="hs">${esc(cell.sub)}</span>`:''}
+    </div>`;
+  });
+
+  /* ── grid lines ── */
+  let gridHtml='';
+  const todayX=today>=timeStart&&today<=timeEnd?xPos(fd(today)):null;
+  if(rm.showToday!==false&&todayX!==null)gridHtml+=`<div class="gl gl-today" style="left:${todayX}px"></div>`;
+
+  /* ── milestone lines ── */
+  let msLines='',msMarkers='';
+  (rm.milestones||[]).forEach(ms=>{
+    const md=pd(ms.date);
+    if(!md||md<timeStart||md>timeEnd)return;
+    const mx=xPos(ms.date);
+    const mc=ms.marker?.color||'#888';
+    if(ms.line?.visible!==false){
+      msLines+=`<div class="ms-vl" style="left:${mx}px;width:0">
+        <div class="ms-vl-inner ms-vl-${ms.line?.style||'dashed'}" style="border-color:${mc}"></div>
+      </div>`;
+    }
+    msMarkers+=`<div class="ms-mk" style="left:${280+mx}px;top:4px;color:${mc}" onclick="openMsForm('${ms.id}')">
+      ${shapeSVG(ms.marker?.shape||'diamond',mc,ms.marker?.size||16)}
+      <span class="ms-tag" style="color:${mc};border-color:${mc}">${esc(ms.name)}</span>
+    </div>`;
+  });
+
+  /* ── rows ── */
+  let rows='';
+  (rm.categories||[])
+    .slice().sort((a,b)=>(a.order||0)-(b.order||0))
+    .forEach(cat=>{
+      const vis=(cat.items||[]).filter(item=>matchSearch(item,cat));
+      if(!vis.length&&searchQ)return;
+
+      /* category row */
+      const catHref=safeLinkHref(cat.link);
+      rows+=`<div class="tl-cat-row" style="--category-color:${esc(cat.color||'#cbd5e1')}">
+        <div class="cat-gap-lines" style="left:280px;width:${totW}px">
+          ${msLines}${gridHtml}
+        </div>
+        <div class="tl-cat-label" onclick="openCatForm('${cat.id}')">
+          <div class="cat-dot" style="background:${cat.color};color:${cat.color}"></div>
+          <div class="cat-info">
+            <span class="cat-nm">${esc(cat.name)}</span>
+            ${cat.subtitle?`<span class="cat-sb">${esc(cat.subtitle)}</span>`:''}
+          </div>
+          ${catHref?`<a class="cat-link" href="${esc(catHref)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${SVG.arrow}</a>`:''}
+          <div class="cat-acts">
+            <button class="mini-btn" onclick="event.stopPropagation();openItemForm(null,'${cat.id}')" title="${t('addItem')}">${SVG.plus}</button>
+            <button class="mini-btn danger" onclick="event.stopPropagation();deleteCat('${cat.id}')" title="${t('delete')}">${SVG.trash}</button>
+          </div>
+        </div>
+        <div class="cat-cells" style="width:${totW}px;--cw:${cw}px;position:relative">
+          ${msLines}${gridHtml}
+        </div>
+      </div>`;
+
+      /* item rows */
+      vis.forEach(item=>{
+        const st=(rm.statuses||[]).find(s=>s.id===item.statusId);
+        const bc=item.fillColor||item.progressColor||item.barColor||st?.color||cat.color||'#94A3B8';
+        const pat=normalizePattern(st?.pattern);
+        const progressPat=normalizePattern(st?.progressPattern||st?.pattern);
+        const bdr=st?.border||'solid';
+        const op=st?.opacity??1;
+
+        /* priority */
+        let priorityHtml='';
+        const priColors={critical:'#EF4444',high:'#F59E0B',medium:'#3B82F6',low:'#10B981'};
+        if(item.priority && item.priority !== 'none'){
+          priorityHtml=`<div class="pri-pip" style="background:${priColors[item.priority]||'#9CA3AF'}" title="${t(item.priority)}"></div>`;
+        }
+        const itemHref=safeLinkHref(item.link);
+        const linkHtml=itemHref?`<a class="lnk-ico" href="${esc(itemHref)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${SVG.arrow}</a>`:'';
+
+        let badgesHtml='',badgeNames=[];
+        (item.badges||[]).forEach(bid=>{
+          const b=(rm.badges||[]).find(x=>x.id===bid);
+          if(!b)return;
+          badgeNames.push(b.text||b.id);
+          if(b.type==='text')badgesHtml+=`<span class="bdg-txt" style="background:${b.color?.value||'#f87171'}">${esc(b.text||b.id)}</span>`;
+          else badgesHtml+=shapeSVG(b.shape||'circle',b.color?.value||'#F59E0B',15);
+        });
+
+        /* subtitles */
+        const subHtml=(item.subtitles||[]).map((s,i)=>`${i>0?'<span class="sub-sep">·</span>':''}<span class="item-sub-txt">${esc(s)}</span>`).join('');
+        const tipTitle=item.name+(badgeNames.length?` [${badgeNames.join(', ')}]`:'');
+
+        /* bar */
+        let barHtml='';
+        const iS=pd(item.start),iE=pd(item.end);
+        if(iS&&iE&&iE>=timeStart&&iS<=timeEnd){
+          const x1=Math.max(0,Math.min(totW,xPos(item.start)));
+          const x2=Math.max(0,Math.min(totW,xPos(item.end)));
+          const bw=Math.max(x2-x1,14);
+          const patCls=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(pat)?`pat-${pat}`:'';
+          const bdrCls=['dashed','dotted','none'].includes(bdr)?`bdr-${bdr}`:'';
+          let bbHtml='';
+          (item.badges||[]).forEach(bid=>{
+            const b=(rm.badges||[]).find(x=>x.id===bid);
+            if(!b)return;
+            if(b.type==='text')bbHtml+=`<span class="bar-bdg-txt">${esc(b.text||b.id)}</span>`;
+            else bbHtml+=`<span>${shapeSVG(b.shape||'circle',b.color?.value||'#F59E0B',13)}</span>`;
+          });
+          const progColor=darkenHex(bc);
+          const progStyle=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(progressPat)?`prog-${progressPat}`:'';
+          const prog=item.progress>0?`<div class="bar-prog ${progStyle}" style="width:${item.progress}%;background:${progColor}"></div>`:'';
+          barHtml=`<div class="bar-outer" style="left:${x1}px;width:${bw}px;opacity:${op}"
+            data-id="${item.id}" data-cid="${cat.id}"
+            onclick="openItemForm('${item.id}','${cat.id}')"
+            oncontextmenu="showCtx(event,'${item.id}','${cat.id}')">
+            <div class="bar-pill ${patCls} ${bdrCls}" style="background:${bc}">
+              ${prog}
+              <span class="bar-nm">${esc(item.name)}</span>
+              <div class="bar-badges">${bbHtml}</div>
+              <div class="rzh rzh-l" onmousedown="startRz(event,'${item.id}','${cat.id}','l')"></div>
+              <div class="rzh rzh-r" onmousedown="startRz(event,'${item.id}','${cat.id}','r')"></div>
+            </div>
+          </div>`;
+        }
+
+        rows+=`<div class="tl-item-row">
+          <div class="tl-item-label" onclick="openItemForm('${item.id}','${cat.id}')" title="${esc(tipTitle)}">
+            <div class="item-priority">${priorityHtml}</div>
+            <div class="item-left">
+              <div class="item-title-row">
+                <span class="item-nm">${esc(item.name)}</span>
+                ${linkHtml}
+              </div>
+              ${subHtml?`<div class="item-subs">${subHtml}</div>`:''}
+            </div>
+            ${badgesHtml?`<div class="item-right">${badgesHtml}</div>`:''}
+            <div class="item-acts">
+              <button class="mini-btn" onclick="event.stopPropagation();openItemForm('${item.id}','${cat.id}')" title="${t('editItem')}">${SVG.edit}</button>
+              <button class="mini-btn danger" onclick="event.stopPropagation();deleteItem('${item.id}','${cat.id}')" title="${t('delete')}">${SVG.trash}</button>
+            </div>
+          </div>
+          <div class="item-cells" style="width:${totW}px;--cw:${cw}px;position:relative">
+            ${msLines}${gridHtml}${barHtml}
+          </div>
+        </div>`;
+      });
+    });
+
+  const html=`
+    <div class="app-body">
+      <div class="tl-wrap" id="tlWrap">
+        <div class="roadmap-canvas" style="width:${280+totW}px;min-width:${280+totW}px;position:relative">
+          <div class="tl-header" style="position:relative">
+            <div class="tl-header-label">${t('catsItems')}</div>
+            <div class="tl-header-cells" style="width:${totW}px">${hCells}</div>
+            ${msMarkers}
+          </div>
+          <div>${rows}</div>
+        </div>
+      </div>
+    </div>`;
+
+  container.innerHTML=html;
+}
+
+function updateSB(){
+  if(!S)return;
+  const rm=S.roadmap;
+  let ti=0;(rm.categories||[]).forEach(c=>ti+=(c.items||[]).length);
+  document.getElementById('sbCounts').textContent=
+    `${(rm.categories||[]).length} ${t('cats')} · ${ti} ${t('items')} · ${(rm.milestones||[]).length} ${t('milestones')}`;
+}
+
+/* ─────────────────────────────────────
+   TOAST
+───────────────────────────────────── */
+function toast(msg,type=''){
+  const z=document.getElementById('toastZone');
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;el.textContent=msg;z.appendChild(el);
+  setTimeout(()=>{el.style.transition='all .25s';el.style.opacity='0';el.style.transform='translateX(16px)';setTimeout(()=>el.remove(),260);},2800);
+}
+
+/* ─────────────────────────────────────
+   MODAL
+───────────────────────────────────── */
+function openModal(title,body,foot,wide=false){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('modalFoot').innerHTML=foot;
+  document.getElementById('modal').className='modal'+(wide?' wide':'');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');}
+document.getElementById('modalClose').onclick=closeModal;
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+
+/* ─────────────────────────────────────
+   ROADMAP SETTINGS
+───────────────────────────────────── */
+function openRoadmapSettings(){
+  const rm=S.roadmap;
+  const preset=THEME_PALETTES[rm.theme?.preset]?(rm.theme?.preset):'default';
+  const themeLabels={default:'themeDefault',violet:'themeViolet',ocean:'themeOcean',forest:'themeForest',sunset:'themeSunset',macaron:'themeMacaron',rainbow:'themeRainbow',darkchic:'themeDarkchic'};
+  const themeOpts=Object.keys(THEME_PALETTES).map(key=>`<option value="${key}" ${key===preset?'selected':''}>${t(themeLabels[key])}</option>`).join('');
+  const body=`
+    <div class="fg"><label class="fl">${t('name')}</label><input class="fi" id="fRtitle" value="${esc(rm.title||'')}"></div>
+    <div class="fg"><label class="fl">${t('subtitle')}</label><input class="fi" id="fRsubtitle" value="${esc(rm.subtitle||'')}"></div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('start')}</label><input type="date" class="fi" id="fRstart" value="${rm.startDate||''}"></div>
+      <div class="fg"><label class="fl">${t('end')}</label><input type="date" class="fi" id="fRend" value="${rm.endDate||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">${t('todayDateLine')}</label><select class="fi" id="fRtoday"><option value="true" ${rm.showToday!==false?'selected':''}>${t('show')}</option><option value="false" ${rm.showToday===false?'selected':''}>${t('hide')}</option></select></div>
+    <div class="fg"><label class="fl">${t('statusLegend')}</label><select class="fi" id="fRstatusLegend"><option value="true" ${rm.showStatusLegend!==false?'selected':''}>${t('show')}</option><option value="false" ${rm.showStatusLegend===false?'selected':''}>${t('hide')}</option></select></div>
+    <div class="fg"><label class="fl">${t('themePalette')}</label><div class="fi-row"><select class="fi" id="fRtheme">${themeOpts}</select><button class="btn btn-ghost btn-sm" type="button" id="fRthemeApply">${t('applyTheme')}</button></div><div class="fi-hint">${t('themeHint')}</div></div>`;
+  const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fRsave">${t('apply')}</button>`;
+  openModal(t('roadmapSettings'),body,foot);
+  document.getElementById('fRsave').onclick=()=>{
+    const start=document.getElementById('fRstart').value,end=document.getElementById('fRend').value;
+    if(start&&end&&pd(start)>pd(end)){toast('Start must be before End','err');return;}
+    rm.title=document.getElementById('fRtitle').value.trim()||'Untitled';
+    rm.subtitle=document.getElementById('fRsubtitle').value.trim()||undefined;
+    rm.startDate=start||undefined;rm.endDate=end||undefined;
+    rm.rangeLocked=Boolean(start&&end);
+    rm.showToday=document.getElementById('fRtoday').value==='true';
+    rm.showStatusLegend=document.getElementById('fRstatusLegend').value==='true';
+    pushHist();closeModal();toast(lang==='ko'?'로드맵 설정이 적용되었습니다':'Roadmap settings applied','ok');
+  };
+  document.getElementById('fRthemeApply').onclick=()=>{
+    applyThemePreset(rm,document.getElementById('fRtheme').value);
+    pushHist();closeModal();toast(lang==='ko'?'테마가 적용되었습니다':'Theme applied','ok');
+  };
+}
+
+/* ─────────────────────────────────────
+   CATEGORY FORM
+───────────────────────────────────── */
+function openCatForm(id){
+  const isNew=!id;
+  const ex=isNew?null:S.roadmap.categories.find(c=>c.id===id);
+  const d=ex||{id:uid('cat-'),name:'',subtitle:'',color:'#6366F1',link:'',order:S.roadmap.categories.length};
+  const body=`
+    <div class="fg"><label class="fl">${t('id')}</label><input class="fi" id="fCid" value="${esc(d.id)}" ${isNew?'':'readonly'}></div>
+    <div class="fg"><label class="fl">${t('name')}</label><input class="fi" id="fCnm" value="${esc(d.name)}" autofocus></div>
+    <div class="fg"><label class="fl">${t('subtitle')}</label><input class="fi" id="fCsb" value="${esc(d.subtitle||'')}"></div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('color')}</label><input type="color" id="fCcol" value="${d.color||'#6366F1'}" style="width:100%;height:36px;border:1px solid #e5e7eb;border-radius:7px;padding:3px;background:#fff;cursor:pointer"></div>
+      <div class="fg"><label class="fl">${t('order')}</label><input type="number" class="fi" id="fCord" value="${d.order??0}" min="0"></div>
+    </div>
+    <div class="fg"><label class="fl">${t('link')}</label><input class="fi" id="fClnk" value="${esc(d.link||'')}" placeholder="https://..."></div>`;
+  const foot=`${!isNew?`<button class="btn btn-danger btn-sm" onclick="deleteCat('${d.id}')">${t('delete')}</button>`:''}<span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fCsave">${t('save')}</button>`;
+  openModal(isNew?t('newCat'):t('editCat'),body,foot);
+  setTimeout(()=>document.getElementById('fCnm')?.focus(),50);
+  document.getElementById('fCsave').onclick=()=>{
+    const id2=document.getElementById('fCid').value.trim();
+    const nm=document.getElementById('fCnm').value.trim();
+    if(!id2||!nm)return;
+    if(!validateNewRoadmapId(id2,d.id)){toast('ID must be unique and use letters, numbers, - or _','err');return;}
+    const categoryLink=document.getElementById('fClnk').value.trim();
+    const upd={id:id2,name:nm,subtitle:document.getElementById('fCsb').value.trim()||undefined,color:document.getElementById('fCcol').value,order:parseInt(document.getElementById('fCord').value)||0,link:categoryLink||undefined};
+    if(isNew){S.roadmap.categories.push({...upd,items:[]});}
+    else{const idx=S.roadmap.categories.findIndex(c=>c.id===id);if(idx>=0)Object.assign(S.roadmap.categories[idx],upd);}
+    pushHist();closeModal();toast(isNew?'Category created':'Category updated','ok');
+  };
+}
+function deleteCat(id){if(!confirm(t('confirmDelete')))return;S.roadmap.categories=S.roadmap.categories.filter(c=>c.id!==id);pushHist();closeModal();toast('Category deleted');}
+
+function openFirstItemWizard(){
+  const defaultName=lang==='ko'?'새 카테고리':'New Category';
+  const body=`<div class="fg"><label class="fl">${t('firstCategory')}</label><input class="fi" id="fFirstCat" value="${esc(defaultName)}" autofocus></div><div class="fi-hint">${t('firstItemHelp')}</div>`;
+  const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fFirstItemCreate">${t('createItem')}</button>`;
+  openModal(t('addFirstItem'),body,foot);
+  setTimeout(()=>document.getElementById('fFirstCat')?.select(),50);
+  document.getElementById('fFirstItemCreate').onclick=()=>{
+    const name=document.getElementById('fFirstCat').value.trim();
+    if(!name)return;
+    const category={id:uid('cat-'),name,color:'#6366F1',order:0,items:[]};
+    S.roadmap.categories.push(category);pushHist();closeModal();openItemForm(null,category.id);
+  };
+}
+
+/* ─────────────────────────────────────
+   ITEM FORM
+───────────────────────────────────── */
+function openItemForm(itemId,catId){
+  const rm=S.roadmap;
+  const isNew=!itemId;
+  const exCat=catId?rm.categories.find(c=>c.id===catId):rm.categories[0];
+  const exItem=isNew?null:(exCat?.items||[]).find(i=>i.id===itemId);
+  const now=fd(new Date());
+  const d=exItem||{id:uid('item-'),name:'',subtitles:[],priority:'none',statusId:rm.statuses[0]?.id||'',start:now,end:fd(addD(new Date(),30)),link:'',badges:[],description:'',progress:0};
+  const stOpts=(rm.statuses||[]).map(s=>`<option value="${s.id}" ${s.id===d.statusId?'selected':''}>${esc(s.name)}</option>`).join('');
+  const catOpts=(rm.categories||[]).map(c=>`<option value="${c.id}" ${c.id===(catId||exCat?.id)?'selected':''}>${esc(c.name)}</option>`).join('');
+  const prOpts=['none','low','medium','high','critical'].map(p=>`<option value="${p}" ${(d.priority||'none')===p?'selected':''}>${t(p)}</option>`).join('');
+  const exStatus=(rm.statuses||[]).find(s=>s.id===d.statusId);
+  const fillColor=d.fillColor||d.progressColor||d.barColor||exStatus?.color||exCat?.color||'#6366F1';
+  const bdgOpts=(rm.badges||[]).map(b=>{
+    const sel=(d.badges||[]).includes(b.id);
+    const prev=b.type==='text'?`<span class="bdg-txt" style="background:${b.color?.value||'#f87171'};font-size:9px">${esc(b.text||b.id)}</span>`:shapeSVG(b.shape||'circle',b.color?.value||'#F59E0B',14);
+    return`<div class="bdg-opt${sel?' sel':''}" data-bid="${b.id}" onclick="this.classList.toggle('sel')">${prev}<span>${esc(b.text||b.id)}</span></div>`;
+  }).join('');
+  const body=`
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('id')}</label><input class="fi" id="fIid" value="${esc(d.id)}" ${isNew?'':'readonly'}></div>
+      <div class="fg"><label class="fl">${t('category')}</label><select class="fi" id="fIcat">${catOpts}</select></div>
+    </div>
+    <div class="fg"><label class="fl">${t('name')}</label><input class="fi" id="fInm" value="${esc(d.name)}"></div>
+    <div class="fg"><label class="fl">${t('subtitles')}</label><input class="fi" id="fIsb" value="${esc((d.subtitles||[]).join(', '))}"><div class="fi-hint">${t('commaHint')}</div></div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('start')}</label><input type="date" class="fi" id="fIs" value="${d.start||''}"></div>
+      <div class="fg"><label class="fl">${t('end')}</label><input type="date" class="fi" id="fIe" value="${d.end||''}"></div>
+    </div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('priority')}</label><select class="fi" id="fIpr">${prOpts}</select></div>
+      <div class="fg"><label class="fl">${t('status')}</label><select class="fi" id="fIst">${stOpts}</select></div>
+    </div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('progress')}</label><input type="number" class="fi" id="fIpg" value="${d.progress||0}" min="0" max="100"></div>
+      <div class="fg"><label class="fl">${t('fillColor')}</label><input type="color" id="fIpgCol" value="${fillColor}" style="width:100%;height:36px;border:1px solid #e5e7eb;border-radius:7px;padding:3px;background:#fff;cursor:pointer"></div>
+    </div>
+    <div class="fg"><label class="fl">${t('badge')}</label><div class="bdg-opts" id="fIbdg">${bdgOpts||`<span style="font-size:12px;color:#9ca3af">No badges defined</span>`}</div></div>
+    <div class="fg"><label class="fl">${t('link')}</label><input class="fi" id="fIlnk" value="${esc(d.link||'')}" placeholder="https://..."></div>
+    <div class="fg"><label class="fl">${t('description')}</label><textarea class="fi" id="fIdesc">${esc(d.description||'')}</textarea></div>`;
+  const foot=`${!isNew?`<button class="btn btn-danger btn-sm" onclick="deleteItem('${d.id}','${catId}')">${t('delete')}</button>`:''}<span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fIsave">${t('save')}</button>`;
+  openModal(isNew?t('newItem'):t('editItem'),body,foot);
+  setTimeout(()=>document.getElementById('fInm')?.focus(),50);
+  document.getElementById('fIsave').onclick=()=>{
+    const id2=document.getElementById('fIid').value.trim();
+    const nm=document.getElementById('fInm').value.trim();
+    if(!id2||!nm)return;
+    if(!validateNewRoadmapId(id2,d.id)){toast('ID must be unique and use letters, numbers, - or _','err');return;}
+    const newCat=document.getElementById('fIcat').value;
+    const subs=document.getElementById('fIsb').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const selBdg=Array.from(document.querySelectorAll('#fIbdg .bdg-opt.sel')).map(el=>el.dataset.bid);
+    const sv=document.getElementById('fIs').value,ev=document.getElementById('fIe').value;
+    if(Boolean(sv)!==Boolean(ev)){toast('Start and End must be entered together','err');return;}
+    if(sv&&ev){const s=pd(sv),e=pd(ev);if(s&&e&&s>e){toast('Start must be before End','err');return;}}
+    const progress=Number(document.getElementById('fIpg').value);
+    if(!Number.isInteger(progress)||progress<0||progress>100){toast('Progress must be an integer from 0 to 100','err');return;}
+    const itemLink=document.getElementById('fIlnk').value.trim();
+    const fillColor=document.getElementById('fIpgCol').value;
+    const upd={id:id2,name:nm,subtitles:subs,priority:document.getElementById('fIpr').value,statusId:document.getElementById('fIst').value,start:sv||undefined,end:ev||undefined,link:itemLink||undefined,badges:selBdg,description:document.getElementById('fIdesc').value.trim()||undefined,progress,fillColor};
+    if(isNew){const tc=S.roadmap.categories.find(c=>c.id===newCat);if(tc)tc.items.push(upd);}
+    else{
+      const oldCat=S.roadmap.categories.find(c=>c.id===catId);
+      if(oldCat&&newCat!==catId){
+        oldCat.items=oldCat.items.filter(i=>i.id!==d.id);
+        const tc=S.roadmap.categories.find(c=>c.id===newCat);if(tc)tc.items.push({...upd,metadata:d.metadata});
+      }else if(oldCat){const idx=oldCat.items.findIndex(i=>i.id===d.id);if(idx>=0)oldCat.items[idx]={...upd,metadata:d.metadata};}
+    }
+    pushHist();closeModal();toast(isNew?'Item created':'Item updated','ok');
+  };
+}
+function deleteItem(itemId,catId){if(!confirm(t('confirmDelete')))return;const cat=S.roadmap.categories.find(c=>c.id===catId);if(cat)cat.items=cat.items.filter(i=>i.id!==itemId);pushHist();closeModal();toast('Item deleted');}
+
+/* ─────────────────────────────────────
+   MILESTONE FORM
+───────────────────────────────────── */
+function openMsForm(id){
+  const isNew=!id;
+  const ex=isNew?null:S.roadmap.milestones.find(m=>m.id===id);
+  const d=ex||{id:uid('ms-'),name:'',date:fd(new Date()),description:'',marker:{shape:'flag',color:'#EF4444',size:16},line:{visible:true,style:'dashed',color:'#EF4444'},labelPosition:'top'};
+  const curMsShape=d.marker?.shape||'flag';
+  const msShapeList=MS_SHAPES.includes(curMsShape)?MS_SHAPES:[curMsShape,...MS_SHAPES];
+  const shOpts=msShapeList.map(s=>`<option value="${s}" ${curMsShape===s?'selected':''}>${t('shape_'+s)||s}</option>`).join('');
+  const stOpts=['dashed','solid','dotted'].map(s=>`<option value="${s}" ${(d.line?.style||'dashed')===s?'selected':''}>${s}</option>`).join('');
+  const body=`
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('id')}</label><input class="fi" id="fMid" value="${esc(d.id)}" ${isNew?'':'readonly'}></div>
+      <div class="fg"><label class="fl">${t('date')}</label><input type="date" class="fi" id="fMdt" value="${d.date||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">${t('name')}</label><input class="fi" id="fMnm" value="${esc(d.name)}"></div>
+    <div class="fg"><label class="fl">${t('description')}</label><textarea class="fi" id="fMdesc">${esc(d.description||'')}</textarea></div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('shape')}</label><select class="fi" id="fMsh">${shOpts}</select></div>
+      <div class="fg"><label class="fl">${t('color')}</label><input type="color" id="fMcol" value="${d.marker?.color||'#EF4444'}" style="width:100%;height:36px;border:1px solid #e5e7eb;border-radius:7px;padding:3px;background:#fff;cursor:pointer"></div>
+    </div>
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('lineVisible')}</label><select class="fi" id="fMlv"><option value="true" ${d.line?.visible!==false?'selected':''}>${t('yes')}</option><option value="false" ${d.line?.visible===false?'selected':''}>${t('no')}</option></select></div>
+      <div class="fg"><label class="fl">${t('lineStyle')}</label><select class="fi" id="fMls">${stOpts}</select></div>
+    </div>`;
+  const foot=`${!isNew?`<button class="btn btn-danger btn-sm" onclick="deleteMs('${d.id}')">${t('delete')}</button>`:''}<span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fMsave">${t('save')}</button>`;
+  openModal(isNew?t('newMs'):t('editMs'),body,foot);
+  document.getElementById('fMsave').onclick=()=>{
+    const id2=document.getElementById('fMid').value.trim();
+    const nm=document.getElementById('fMnm').value.trim();
+    const dt=document.getElementById('fMdt').value;
+    if(!id2||!nm||!dt)return;
+    if(!validId(id2)||S.roadmap.milestones.some(x=>x.id===id2&&x.id!==d.id)){toast('Milestone ID must be unique and valid','err');return;}
+    const col=document.getElementById('fMcol').value;
+    const upd={id:id2,name:nm,date:dt,description:document.getElementById('fMdesc').value.trim()||undefined,marker:{shape:document.getElementById('fMsh').value,color:col,size:d.marker?.size||16},line:{visible:document.getElementById('fMlv').value==='true',style:document.getElementById('fMls').value,color:col},labelPosition:d.labelPosition||'top',metadata:d.metadata};
+    if(isNew)S.roadmap.milestones.push(upd);
+    else{const idx=S.roadmap.milestones.findIndex(m=>m.id===d.id);if(idx>=0)S.roadmap.milestones[idx]=upd;}
+    pushHist();closeModal();toast(isNew?'Milestone created':'Milestone updated','ok');
+  };
+}
+function deleteMs(id){if(!confirm(t('confirmDelete')))return;S.roadmap.milestones=S.roadmap.milestones.filter(m=>m.id!==id);pushHist();closeModal();toast('Milestone deleted');}
+
+/* ─────────────────────────────────────
+   STATUS / BADGE MANAGER
+───────────────────────────────────── */
+function openStatuses(){
+  const rm=S.roadmap;
+  const list=(rm.statuses||[]).map(s=>`<div class="elitem">
+    <div style="width:10px;height:10px;border-radius:50%;background:${s.color};flex-shrink:0"></div>
+    <span class="nm">${esc(s.name)}</span><span class="meta">${normalizePattern(s.pattern)} / ${normalizePattern(s.progressPattern||s.pattern)} / ${s.border}${s.completed?' ✓':''}</span>
+    <div class="acts"><button class="mini-btn" onclick="editStForm('${s.id}')">${SVG.edit}</button><button class="mini-btn danger" onclick="deleteSt('${s.id}')">${SVG.trash}</button></div>
+  </div>`).join('');
+  openModal(t('manageStatuses'),`<div class="elist">${list||'<p style="color:#9ca3af;font-size:13px">No statuses</p>'}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="newStForm()">${t('add')}</button><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('close')}</button>`);
+}
+function newStForm(){closeModal();openStForm(null);}
+function editStForm(id){closeModal();openStForm(S.roadmap.statuses.find(s=>s.id===id));}
+function deleteSt(id){
+  if(!confirm(t('confirmDelete')))return;
+  S.roadmap.statuses=S.roadmap.statuses.filter(s=>s.id!==id);
+  (S.roadmap.categories||[]).forEach(c=>(c.items||[]).forEach(i=>{if(i.statusId===id)delete i.statusId;}));
+  pushHist();closeModal();openStatuses();
+}
+function openStForm(s){
+  const isNew=!s;
+  const d=s||{id:uid('st-'),name:'',color:'#6366F1',pattern:'solid',progressPattern:'solid',border:'solid',completed:false,opacity:1};
+  const currentPattern=normalizePattern(d.pattern);
+  const currentProgressPattern=normalizePattern(d.progressPattern||d.pattern);
+  const pOpts=[
+    ['solid','solid'],['diagonal','diagonal'],['horizontal','horizontalLines'],['vertical','verticalLines'],
+    ['dot','dots'],['grid','grid'],['gradient','gradient']
+  ].map(([value,label])=>`<option value="${value}" ${currentPattern===value?'selected':''}>${t(label)}</option>`).join('');
+  const progressOpts=[
+    ['solid','solid'],['diagonal','diagonal'],['horizontal','horizontalLines'],['vertical','verticalLines'],
+    ['dot','dots'],['grid','grid'],['gradient','gradient']
+  ].map(([value,label])=>`<option value="${value}" ${currentProgressPattern===value?'selected':''}>${t(label)}</option>`).join('');
+  const bOpts=['solid','dashed','dotted','none'].map(b=>`<option value="${b}" ${d.border===b?'selected':''}>${b}</option>`).join('');
+  const body=`
+    <div class="fi-row"><div class="fg"><label class="fl">${t('id')}</label><input class="fi" id="fSid" value="${esc(d.id)}" ${isNew?'':'readonly'}></div><div class="fg"><label class="fl">${t('name')}</label><input class="fi" id="fSnm" value="${esc(d.name)}"></div></div>
+    <div class="fi-row"><div class="fg"><label class="fl">${t('color')}</label><input type="color" id="fScol" value="${d.color}" style="width:100%;height:36px;border:1px solid #e5e7eb;border-radius:7px;padding:3px;background:#fff;cursor:pointer"></div><div class="fg"><label class="fl">${t('completed')}</label><select class="fi" id="fSdone"><option value="false" ${!d.completed?'selected':''}>${t('no')}</option><option value="true" ${d.completed?'selected':''}>${t('yes')}</option></select></div></div>
+    <div class="fi-row"><div class="fg"><label class="fl">${t('fill')}</label><select class="fi" id="fSpat">${pOpts}</select></div><div class="fg"><label class="fl">${t('progressFillPattern')}</label><select class="fi" id="fSprogPat">${progressOpts}</select></div></div>
+    <div class="fg"><label class="fl">${t('border')}</label><select class="fi" id="fSbdr">${bOpts}</select></div>
+    <div class="fg"><label class="fl">${t('opacity')}</label><input type="number" class="fi" id="fSopa" value="${d.opacity??1}" min="0" max="1" step="0.1"></div>`;
+  const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal();openStatuses()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fSsave">${t('save')}</button>`;
+  openModal(isNew?`${t('add')} Status`:`Edit Status`,body,foot);
+  document.getElementById('fSsave').onclick=()=>{
+    const id2=document.getElementById('fSid').value.trim();const nm=document.getElementById('fSnm').value.trim();if(!id2||!nm)return;
+    if(!validId(id2)||S.roadmap.statuses.some(x=>x.id===id2&&x.id!==d.id)){toast('Status ID must be unique and valid','err');return;}
+    const opacity=Number(document.getElementById('fSopa').value);if(!Number.isFinite(opacity)||opacity<0||opacity>1){toast('Opacity must be between 0 and 1','err');return;}
+    const upd={id:id2,name:nm,color:document.getElementById('fScol').value,pattern:document.getElementById('fSpat').value,progressPattern:document.getElementById('fSprogPat').value,border:document.getElementById('fSbdr').value,completed:document.getElementById('fSdone').value==='true',opacity,metadata:d.metadata};
+    if(isNew)S.roadmap.statuses.push(upd);else{const idx=S.roadmap.statuses.findIndex(x=>x.id===d.id);if(idx>=0)S.roadmap.statuses[idx]=upd;}
+    pushHist();closeModal();openStatuses();
+  };
+}
+
+function openCategories(){
+  const rm=S.roadmap;
+  const list=(rm.categories||[]).map(c=>`
+    <div class="elitem">
+      <div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0"></div>
+      <span class="nm">${esc(c.name)} ${c.subtitle?`<span style="color:#9ca3af;font-size:11px">· ${esc(c.subtitle)}</span>`:''}</span>
+      <span class="meta">${(c.items||[]).length} items</span>
+      <div class="acts">
+        <button class="mini-btn" onclick="closeModal();openCatForm('${c.id}')">${SVG.edit}</button>
+        <button class="mini-btn danger" onclick="deleteCat('${c.id}')">${SVG.trash}</button>
+      </div>
+    </div>`).join('');
+  openModal(t('manageCats'),`<div class="elist">${list||'<p style="color:#9ca3af;font-size:13px">No categories</p>'}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="closeModal();openCatForm(null)">${t('add')}</button><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('close')}</button>`);
+}
+
+function openItems(){
+  const rm=S.roadmap;
+  const allItems=[];
+  (rm.categories||[]).forEach(c=>{
+    (c.items||[]).forEach(i=>{
+      allItems.push({item:i,cat:c});
+    });
+  });
+  const list=allItems.map(({item,cat})=>{
+    const st=(rm.statuses||[]).find(s=>s.id===item.statusId);
+    return`
+      <div class="elitem">
+        <div style="width:8px;height:8px;border-radius:50%;background:${cat.color};flex-shrink:0" title="Category: ${esc(cat.name)}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="nm" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(item.name)}</div>
+          <div style="font-size:10px;color:#9ca3af">${esc(cat.name)} · ${item.start||''} ~ ${item.end||''}</div>
+        </div>
+        ${st?`<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${st.color};color:#fff;font-weight:600">${esc(st.name)}</span>`:''}
+        <div class="acts">
+          <button class="mini-btn" onclick="closeModal();openItemForm('${item.id}','${cat.id}')">${SVG.edit}</button>
+          <button class="mini-btn danger" onclick="deleteItem('${item.id}','${cat.id}')">${SVG.trash}</button>
+        </div>
+      </div>`;
+  }).join('');
+  openModal(t('manageItems'),`<div class="elist" style="max-height:60vh;overflow-y:auto">${list||'<p style="color:#9ca3af;font-size:13px">No items</p>'}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="closeModal();if(S.roadmap.categories.length)openItemForm(null,S.roadmap.categories[0].id);else toast('Add a category first','err');">${t('add')}</button><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('close')}</button>`,true);
+}
+
+function openMilestones(){
+  const rm=S.roadmap;
+  const list=(rm.milestones||[]).map(m=>`
+    <div class="elitem">
+      ${shapeSVG(m.marker?.shape||'diamond',m.marker?.color||'#EF4444',16)}
+      <span class="nm">${esc(m.name)}</span>
+      <span class="meta">${m.date||''}</span>
+      <div class="acts">
+        <button class="mini-btn" onclick="closeModal();openMsForm('${m.id}')">${SVG.edit}</button>
+        <button class="mini-btn danger" onclick="deleteMs('${m.id}')">${SVG.trash}</button>
+      </div>
+    </div>`).join('');
+  openModal(t('manageMs'),`<div class="elist">${list||'<p style="color:#9ca3af;font-size:13px">No milestones</p>'}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="closeModal();openMsForm(null)">${t('add')}</button><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('close')}</button>`);
+}
+
+function openBadges(){
+  const rm=S.roadmap;
+  const list=(rm.badges||[]).map(b=>{
+    const prev=b.type==='text'?`<span class="bdg-txt" style="background:${b.color?.value||'#f87171'}">${esc(b.text||b.id)}</span>`:shapeSVG(b.shape||'circle',b.color?.value||'#F59E0B',16);
+    return`<div class="elitem">${prev}<span class="nm">${esc(b.id)}${b.text&&b.text!==b.id?` <span style="font-size:11px;color:#9ca3af">(${esc(b.text)})</span>`:''}</span><span class="meta">${b.type}</span><div class="acts"><button class="mini-btn" onclick="editBdgForm('${b.id}')">${SVG.edit}</button><button class="mini-btn danger" onclick="deleteBdg('${b.id}')">${SVG.trash}</button></div></div>`;
+  }).join('');
+  openModal(t('manageBadges'),`<div class="elist">${list||'<p style="color:#9ca3af;font-size:13px">No badges</p>'}</div>`,
+    `<button class="btn btn-primary btn-sm" onclick="newBdgForm()">${t('add')}</button><span class="sp"></span><button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('close')}</button>`);
+}
+function newBdgForm(){closeModal();openBdgForm(null);}
+function editBdgForm(id){closeModal();openBdgForm(S.roadmap.badges.find(b=>b.id===id));}
+function deleteBdg(id){if(!confirm(t('confirmDelete')))return;S.roadmap.badges=S.roadmap.badges.filter(b=>b.id!==id);S.roadmap.categories.forEach(c=>(c.items||[]).forEach(i=>{i.badges=(i.badges||[]).filter(bid=>bid!==id);}));pushHist();closeModal();openBadges();}
+function openBdgForm(b){
+  const isNew=!b;
+  const d=b||{id:uid('bdg-'),type:'shape',shape:'star',text:'',color:{type:'solid',value:'#F59E0B'}};
+  const defaultCol=d.color?.value||(d.type==='text'?'#f87171':'#F59E0B');
+  const curBdgShape=d.shape||'star';
+  const bdgShapeList=BDG_SHAPES.includes(curBdgShape)?BDG_SHAPES:[curBdgShape,...BDG_SHAPES];
+  const shOpts=bdgShapeList.map(s=>`<option value="${s}" ${curBdgShape===s?'selected':''}>${t('shape_'+s)||s}</option>`).join('');
+  const body=`
+    <div class="fi-row">
+      <div class="fg"><label class="fl">${t('id')}</label><input class="fi" id="fBid" value="${esc(d.id)}" ${isNew?'':'readonly'}></div>
+      <div class="fg"><label class="fl">${t('type')}</label><select class="fi" id="fBtp" onchange="toggleBF()"><option value="shape" ${d.type==='shape'?'selected':''}>Shape</option><option value="text" ${d.type==='text'?'selected':''}>Text</option></select></div>
+    </div>
+    <div id="bSF" style="${d.type==='shape'?'':'display:none'}">
+      <div class="fg"><label class="fl">${t('shape')}</label><select class="fi" id="fBsh">${shOpts}</select></div>
+    </div>
+    <div id="bTF" style="${d.type==='text'?'':'display:none'}">
+      <div class="fg"><label class="fl">${t('text')}</label><input class="fi" id="fBtxt" value="${esc(d.text||d.id)}"></div>
+    </div>
+    <div class="fg">
+      <label class="fl">${t('color')}</label>
+      <input type="color" id="fBcol" value="${defaultCol}" style="width:100%;height:36px;border:1px solid #e5e7eb;border-radius:7px;padding:3px;background:#fff;cursor:pointer">
+    </div>`;
+  const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal();openBadges()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fBsave">${t('save')}</button>`;
+  openModal(isNew?`${t('add')} Badge`:`Edit Badge`,body,foot);
+  document.getElementById('fBsave').onclick=()=>{
+    const id2=document.getElementById('fBid').value.trim();if(!id2)return;
+    if(!validId(id2)||S.roadmap.badges.some(x=>x.id===id2&&x.id!==d.id)){toast('Badge ID must be unique and valid','err');return;}
+    const tp=document.getElementById('fBtp').value;
+    const colVal=document.getElementById('fBcol').value||defaultCol;
+    let upd;
+    if(tp==='shape'){
+      upd={id:id2,type:tp,shape:document.getElementById('fBsh').value,color:{type:'solid',value:colVal}};
+    }else{
+      const tx=document.getElementById('fBtxt').value.trim()||id2;
+      upd={id:id2,type:tp,text:tx,color:{type:'solid',value:colVal}};
+    }
+    if(isNew){
+      S.roadmap.badges.push(upd);
+    }else{
+      const idx=S.roadmap.badges.findIndex(x=>x.id===d.id);
+      if(idx>=0)S.roadmap.badges[idx]=upd;
+      if(d.id!==id2){
+        S.roadmap.categories.forEach(c=>(c.items||[]).forEach(i=>{if(i.badges)i.badges=i.badges.map(x=>x===d.id?id2:x);}));
+      }
+    }
+    pushHist();closeModal();openBadges();
+  };
+}
+window.toggleBF=()=>{
+  const tp=document.getElementById('fBtp').value;
+  document.getElementById('bSF').style.display=tp==='shape'?'':'none';
+  document.getElementById('bTF').style.display=tp==='text'?'':'none';
+};
+
+/* ─────────────────────────────────────
+   ABOUT MODAL
+───────────────────────────────────── */
+function openAbout(){
+  const body=`
+    <div style="text-align:center;padding:12px 16px 20px;">
+      <div style="margin-bottom:14px;display:flex;justify-content:center;">
+        <svg width="72" height="72" viewBox="0 0 512 512" fill="none" style="filter:drop-shadow(0 8px 16px rgba(0,0,0,0.15));">
+          <rect width="512" height="512" rx="110" fill="#1e1e38"/>
+          <rect x="110" y="145" width="230" height="52" rx="18" fill="#6366f1"/>
+          <rect x="170" y="230" width="220" height="52" rx="18" fill="#10b981"/>
+          <rect x="120" y="315" width="200" height="52" rx="18" fill="#f59e0b"/>
+          <line x1="256" y1="110" x2="256" y2="400" stroke="#f43f5e" stroke-width="8"/>
+          <circle cx="256" cy="110" r="16" fill="#f43f5e"/>
+        </svg>
+      </div>
+      <h2 style="font-size:20px;font-weight:800;color:inherit;margin-bottom:4px;">Roadmap Timeliner</h2>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:16px;">Version 0.1.0 · Desktop &amp; Web</p>
+      <p style="font-size:13px;line-height:1.6;color:inherit;opacity:0.85;max-width:380px;margin:0 auto 18px;">
+        ${lang==='ko'
+          ?'프로젝트와 제품 로드맵을 시각적으로 설계하고 타임라인으로 관리하는 현대적인 도구입니다. JSON 스키마 검증, AI 에이전트 연동, 다양한 포맷 내보내기를 지원합니다.'
+          :'A modern visual tool for designing roadmaps and managing project timelines. Features JSON schema validation, AI agent integration, and flexible exports.'}
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;font-size:12px;">
+        <button class="btn sec" onclick="window.open('https://github.com/chokidong/roadmap-timeliner','_blank')" style="display:inline-flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          GitHub
+        </button>
+        <button class="btn pri" onclick="closeModal()">${t('cancel')}</button>
+      </div>
+    </div>
+  `;
+  openModal(lang==='ko'?'Roadmap Timeliner 정보':'About Roadmap Timeliner',body,'');
+}
+
+/* ─────────────────────────────────────
+   JSON EDITOR
+───────────────────────────────────── */
+function openJSONEditor(){
+  const json=JSON.stringify(S,null,2);
+  const body=`<textarea class="fi" id="jsonTA" style="min-height:380px;font-family:monospace;font-size:11px;line-height:1.6">${esc(json)}</textarea><div id="jsonErr" style="color:#ef4444;font-size:11px;margin-top:6px;white-space:pre"></div>`;
+  const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="jsonApply">${t('apply')}</button>`;
+  openModal(t('jsonEditorTitle'),body,foot,true);
+  document.getElementById('jsonApply').onclick=()=>{
+    try{
+      const p=JSON.parse(document.getElementById('jsonTA').value);
+      const v=validate(p);
+      if(!v.valid){document.getElementById('jsonErr').textContent=v.errors.map(e=>`${e.code} @ ${e.path}`).join('\n');return;}
+      const themePreset=typeof p.roadmap?.theme==='string'?p.roadmap.theme:p.roadmap?.theme?.preset;
+      const oldPreset=typeof S?.roadmap?.theme==='string'?S.roadmap.theme:S?.roadmap?.theme?.preset;
+      if(themePreset&&THEME_PALETTES[themePreset]&&(!S||themePreset!==oldPreset)){
+        applyThemePreset(p.roadmap,themePreset);
+      }
+      if(p.roadmap?.locale){lang=p.roadmap.locale;const ls=document.getElementById('langSel');if(ls)ls.value=lang;applyI18n();}
+      if(p.roadmap?.scale){tlScale=p.roadmap.scale;syncScaleButtons();}
+      S=p;pushHist();closeModal();toast(t('importOk'),'ok');
+    }catch(e){document.getElementById('jsonErr').textContent='JSON parse error: '+e.message;}
+  };
+}
+
+/* ─────────────────────────────────────
+   CONTEXT MENU
+───────────────────────────────────── */
+function showCtx(e,itemId,catId){
+  e.preventDefault();e.stopPropagation();
+  const menu=document.getElementById('ctxMenu');
+  const statuses=S.roadmap.statuses||[];
+  let html=`<div class="ctx-item" onclick="openItemForm('${itemId}','${catId}')">${SVG.edit} ${t('editItem')}</div><div class="ctx-sep"></div><div class="ctx-sec">Set Status</div>`;
+  statuses.forEach(s=>{html+=`<div class="ctx-item" onclick="qStatus('${itemId}','${catId}','${s.id}')"><span class="ctx-dot" style="background:${s.color}"></span>${esc(s.name)}</div>`;});
+  html+=`<div class="ctx-sep"></div><div class="ctx-item danger" onclick="qDelete('${itemId}','${catId}')">${SVG.trash} ${t('delete')}</div>`;
+  menu.innerHTML=html;
+  menu.style.left=Math.min(e.clientX,innerWidth-220)+'px';
+  menu.style.top=Math.min(e.clientY,innerHeight-300)+'px';
+  menu.classList.add('open');
+}
+function qStatus(iid,cid,sid){
+  const cat=S.roadmap.categories.find(c=>c.id===cid);
+  if(cat){const item=cat.items.find(i=>i.id===iid);if(item){item.statusId=sid;const st=S.roadmap.statuses.find(s=>s.id===sid);if(st?.completed)item.progress=100;}}
+  document.getElementById('ctxMenu').classList.remove('open');pushHist();
+}
+function qDelete(iid,cid){
+  document.getElementById('ctxMenu').classList.remove('open');
+  if(!confirm(t('confirmDelete')))return;
+  const cat=S.roadmap.categories.find(c=>c.id===cid);if(cat)cat.items=cat.items.filter(i=>i.id!==iid);pushHist();
+}
+document.addEventListener('click',()=>document.getElementById('ctxMenu').classList.remove('open'));
+
+/* ─────────────────────────────────────
+   DRAG RESIZE
+───────────────────────────────────── */
+function startRz(e,itemId,catId,side){
+  e.preventDefault();e.stopPropagation();
+  const range=getRange();const scale=pickScale(range);const cells=makeCells(range,scale);
+  const cw=CW[scale]||110;const totD=diffD(range.min,range.max);const totW=cells.length*cw;
+  const cat=S.roadmap.categories.find(c=>c.id===catId);const item=cat?.items.find(i=>i.id===itemId);
+  if(!item)return;
+  const oS=item.start,oE=item.end;const sx=e.clientX;
+  const onMove=ev=>{
+    const dx=ev.clientX-sx;const days=Math.round((dx/totW)*totD);
+    if(side==='l'){const nd=addD(pd(oS)||new Date(),days);if(nd<(pd(oE)||new Date()))item.start=fd(nd);}
+    else{const nd=addD(pd(oE)||new Date(),days);if(nd>(pd(oS)||new Date()))item.end=fd(nd);}
+    render();
+  };
+  const onUp=()=>{
+    document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+    if(item.start!==oS||item.end!==oE)pushHist();
+  };
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
+
+/* ─────────────────────────────────────
+   IMPORT / EXPORT
+───────────────────────────────────── */
+function doImport(){document.getElementById('fileIn').click();}
+function snapshotForDesktop(){
+  if(!S)return null;
+  const next=clone(S);
+  const curTitle=document.getElementById('rmTitle')?.value?.trim();
+  if(curTitle)next.roadmap.title=curTitle;
+  next.roadmap.locale=lang;next.roadmap.scale=tlScale;
+  return JSON.stringify(next);
+}
+function hasDesktopUnsavedChanges(){
+  if(!S)return false;
+  if(desktopPath){
+    return desktopSavedSnapshot!==snapshotForDesktop();
+  }
+  return desktopSavedSnapshot!==null?desktopSavedSnapshot!==snapshotForDesktop():true;
+}
+async function confirmDiscardDesktopChanges(){
+  if(!hasDesktopUnsavedChanges())return true;
+  if(window.roadmapDesktop?.confirmDiscard){
+    return await window.roadmapDesktop.confirmDiscard();
+  }
+  return confirm(lang==='ko'?'저장하지 않은 변경사항을 버리시겠습니까?':'Discard unsaved changes?');
+}
+function applyLoadedDocument(p,sourcePath=null){
+  const v=validate(p);
+  if(!v.valid){toast(t('importErr')+': '+v.errors.map(x=>x.code).join(', '),'err');return false;}
+  const themePreset=typeof p.roadmap?.theme==='string'?p.roadmap.theme:p.roadmap?.theme?.preset;
+  if(themePreset&&THEME_PALETTES[themePreset])applyThemePreset(p.roadmap,themePreset);
+  if(p.roadmap?.locale){lang=p.roadmap.locale;const ls=document.getElementById('langSel');if(ls)ls.value=lang;applyI18n();}
+  if(p.roadmap?.scale){tlScale=p.roadmap.scale;syncScaleButtons();}
+  S=p;hist=[clone(S)];histIdx=0;desktopPath=sourcePath;desktopSavedSnapshot=null;saveState();render();desktopSavedSnapshot=sourcePath?snapshotForDesktop():null;toast(t('importOk'),'ok');
+  return true;
+}
+document.getElementById('fileIn').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      applyLoadedDocument(JSON.parse(ev.target.result));
+    }catch{toast(t('importErr'),'err');}
+  };
+  r.readAsText(f);e.target.value='';
+});
+
+async function doDesktopOpen(){
+  if(!window.roadmapDesktop)return;
+  if(!await confirmDiscardDesktopChanges())return;
+  try{
+    const result=await window.roadmapDesktop.open();
+    if(result?.cancelled)return;
+    const parsed=JSON.parse(result.text);
+    if(applyLoadedDocument(parsed,result.path)){
+      window.roadmapDesktop.rememberRecent?.(result.path);
+    }
+  }catch(err){
+    console.error('Open error:',err);
+    toast(t('importErr'),'err');
+  }
+}
+
+async function doDesktopSave(saveAs=false){
+  if(!window.roadmapDesktop)return false;
+  if(!S){
+    toast(lang==='ko'?'저장할 로드맵이 없습니다. 먼저 문서를 생성하세요.':'No roadmap to save. Create a document first.','err');
+    return false;
+  }
+  const curTitle=document.getElementById('rmTitle')?.value?.trim();
+  if(curTitle)S.roadmap.title=curTitle;
+  S.roadmap.locale=lang;S.roadmap.scale=tlScale;
+  try{
+    const text=snapshotForDesktop();
+    const targetPath=saveAs?null:desktopPath;
+    const result=await window.roadmapDesktop.save(text+'\n',targetPath);
+    if(result?.cancelled)return false;
+    desktopPath=result.path;desktopSavedSnapshot=text;window.roadmapDesktop.rememberRecent?.(result.path);saveState();toast(t('exportOk'),'ok');return true;
+  }catch(err){
+    console.error('Save error:',err);
+    toast(lang==='ko'?'저장 실패':'Save failed','err');
+    return false;
+  }
+}
+
+async function doDesktopNew(){
+  if(!await confirmDiscardDesktopChanges())return;
+  S=null;hist=[];histIdx=-1;desktopPath=null;desktopSavedSnapshot=null;
+  try{
+    localStorage.setItem(getStoreKey(),'__RESET__');
+  }catch(e){}
+  onboardStep=0;selectedTemplate=null;render();
+  toast(lang==='ko'?'새 로드맵 만들기를 시작합니다':'Started new roadmap','ok');
+}
+
+async function doDesktopReload(){
+  if(!window.roadmapDesktop||!desktopPath)return;
+  if(!await confirmDiscardDesktopChanges())return;
+  try{
+    const result=await window.roadmapDesktop.reload(desktopPath);
+    applyLoadedDocument(JSON.parse(result.text),result.path);
+  }catch{toast(t('importErr'),'err');}
+}
+
+function safeName(){
+  return (S?.roadmap.title||'roadmap').trim().replace(/[/\\?%*:|"<>]/g,'_').replace(/\s+/g,'_')||'roadmap';
+}
+
+function doExportJSON(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=safeName()+'.json';a.click();URL.revokeObjectURL(url);toast(t('exportOk'),'ok');
+}
+
+function generateCleanExportHTML(data){
+  const exportData=clone(data);
+  const curTitle=document.getElementById('rmTitle')?.value?.trim();
+  if(curTitle) exportData.roadmap.title=curTitle;
+  const curSub=document.getElementById('rmSubtitle')?.value?.trim();
+  if(curSub!==undefined) exportData.roadmap.subtitle=curSub;
+  exportData.roadmap.locale=lang;
+  exportData.roadmap.scale=tlScale;
+
+  const cloneDoc=document.documentElement.cloneNode(true);
+
+  // 1. Remove export overlay, toasts, and open dropdowns
+  cloneDoc.querySelectorAll('.exp-ov').forEach(el=>el.remove());
+  const toastZ=cloneDoc.querySelector('#toastZone');
+  if(toastZ) toastZ.innerHTML='';
+  const moreDd=cloneDoc.querySelector('#moreDd');
+  if(moreDd) moreDd.classList.remove('open');
+  const ctx=cloneDoc.querySelector('#ctxMenu');
+  if(ctx) ctx.classList.remove('open');
+  const overlay=cloneDoc.querySelector('#overlay');
+  if(overlay) overlay.classList.remove('open');
+
+  // 2. Remove any previous embedded data scripts
+  cloneDoc.querySelectorAll('#__ROADMAP_EMBEDDED_DATA__').forEach(el=>el.remove());
+
+  // 3. Clear dynamic containers so on opening the file, init() cleanly renders with fresh listeners
+  const appContent=cloneDoc.querySelector('#appContent');
+  if(appContent) appContent.innerHTML='';
+  const headerLegend=cloneDoc.querySelector('#headerLegend');
+  if(headerLegend) headerLegend.innerHTML='';
+
+  // 4. Update title and subtitle in input and <title> tag
+  const safeTitle=exportData.roadmap.title||'Roadmap';
+  const titleInp=cloneDoc.querySelector('#rmTitle');
+  if(titleInp) titleInp.setAttribute('value',safeTitle);
+  const subInp=cloneDoc.querySelector('#rmSubtitle');
+  if(subInp){
+    if(exportData.roadmap.subtitle){
+      subInp.setAttribute('value',exportData.roadmap.subtitle);
+      subInp.style.display='block';
+    }else{
+      subInp.removeAttribute('value');
+      subInp.style.display='none';
+    }
+  }
+  const titleTag=cloneDoc.querySelector('title');
+  if(titleTag) titleTag.textContent=safeTitle+' - Roadmap Timeliner';
+
+  // 5. Update language in <html lang> and <select id="langSel">
+  cloneDoc.setAttribute('lang',lang);
+  const langSel=cloneDoc.querySelector('#langSel');
+  if(langSel){
+    langSel.querySelectorAll('option').forEach(opt=>{
+      if(opt.value===lang) opt.setAttribute('selected','');
+      else opt.removeAttribute('selected');
+    });
+  }
+
+  // 6. Update scale buttons
+  cloneDoc.querySelectorAll('#scaleGroup [data-sc]').forEach(b=>{
+    if(b.dataset.sc===(tlScale||'auto')) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+
+  // 7. Inject safe JSON data script tag in <head>
+  const scriptEl=document.createElement('script');
+  scriptEl.id='__ROADMAP_EMBEDDED_DATA__';
+  scriptEl.type='application/json';
+  scriptEl.textContent=JSON.stringify(exportData).replace(/</g,'\\u003c');
+  const head=cloneDoc.querySelector('head');
+  if(head) head.appendChild(scriptEl);
+
+  return '<!DOCTYPE html>\n'+cloneDoc.outerHTML;
+}
+
+async function doExportHTML(){
+  if(!S) return;
+  const curTitle=document.getElementById('rmTitle')?.value?.trim();
+  if(curTitle) S.roadmap.title=curTitle;
+  const curSub=document.getElementById('rmSubtitle')?.value?.trim();
+  if(curSub!==undefined) S.roadmap.subtitle=curSub;
+  S.roadmap.locale=lang;
+  S.roadmap.scale=tlScale;
+
+  try{
+    const html=generateCleanExportHTML(S);
+    if(window.roadmapDesktop?.exportHtml){
+      const result=await window.roadmapDesktop.exportHtml(html, safeName()+'.html');
+      if(result?.cancelled)return;
+      toast(t('exportOk'),'ok');
+      return;
+    }
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=safeName()+'.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast(t('exportOk'),'ok');
+  }catch(err){
+    console.error(err);
+    toast(lang==='ko'?'HTML 내보내기 실패':'HTML export failed','err');
+  }
+}
+
+function generateStaticHTMLFragment(){
+  const canvas=document.querySelector('.roadmap-canvas');
+  if(!canvas)return '';
+  const sheet=document.createElement('div');
+  sheet.className='export-sheet roadmap-html-export';
+  const heading=document.createElement('div');heading.className='export-heading';
+  const title=document.createElement('h1');title.textContent=S.roadmap.title||'Roadmap';heading.appendChild(title);
+  if(S.roadmap.subtitle){const sub=document.createElement('p');sub.textContent=S.roadmap.subtitle;heading.appendChild(sub);}
+  const legendEl=document.getElementById('headerLegend');
+  if(legendEl&&legendEl.firstElementChild){heading.appendChild(legendEl.firstElementChild.cloneNode(true));}
+  const staticCanvas=canvas.cloneNode(true);
+  staticCanvas.querySelectorAll('button,.rzh').forEach(el=>el.remove());
+  staticCanvas.querySelectorAll('*').forEach(el=>{
+    ['onclick','oncontextmenu','onmousedown'].forEach(name=>el.removeAttribute(name));
+    if(el.tagName==='A'){el.setAttribute('rel','noopener noreferrer');}
+  });
+  sheet.append(heading,staticCanvas);
+  const css=Array.from(document.querySelectorAll('style')).map(el=>el.textContent||'').join('\n');
+  return `<style>\n${css}\n</style>\n${sheet.outerHTML}`;
+}
+
+async function copyText(text){
+  if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);return;}
+  const area=document.createElement('textarea');
+  area.value=text;area.setAttribute('readonly','');
+  area.style.cssText='position:fixed;left:-9999px;top:0;';
+  document.body.appendChild(area);area.select();
+  const copied=document.execCommand('copy');area.remove();
+  if(!copied)throw new Error('Clipboard unavailable');
+}
+
+async function doCopyHTML(){
+  if(!S)return;
+  const html=generateStaticHTMLFragment();
+  if(!html)return;
+  try{await copyText(html);toast(t('copyOk'),'ok');}
+  catch(err){toast(lang==='ko'?'HTML 복사 실패':'HTML copy failed','err');}
+}
+
+async function doExportPNG(){
+  const canvas=document.querySelector('.roadmap-canvas');
+  if(!canvas)return;
+  const ov=document.createElement('div');ov.className='exp-ov';ov.innerHTML='<div class="exp-spin"></div><p>Generating PNG…</p>';document.body.appendChild(ov);
+  const sheet=document.createElement('div');
+  sheet.className='export-sheet';
+  sheet.style.cssText=`position:absolute;left:-100000px;top:0;width:${canvas.offsetWidth+80}px;`;
+  const heading=document.createElement('div');heading.className='export-heading';
+  const title=document.createElement('h1');title.textContent=S.roadmap.title||'Roadmap';heading.appendChild(title);
+  if(S.roadmap.subtitle){const sub=document.createElement('p');sub.textContent=S.roadmap.subtitle;heading.appendChild(sub);}
+  const legendEl=document.getElementById('headerLegend');
+  if(legendEl&&legendEl.firstElementChild){heading.appendChild(legendEl.firstElementChild.cloneNode(true));}
+  sheet.append(heading,canvas.cloneNode(true));document.body.appendChild(sheet);
+  try{
+    if(typeof html2canvas==='undefined')throw new Error('html2canvas not available');
+    await document.fonts.ready;
+    const cv=await html2canvas(sheet,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,windowWidth:sheet.offsetWidth+80});
+    const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download=safeName()+'.png';a.click();toast(t('exportOk'),'ok');
+  }catch(err){toast('PNG error: '+err.message,'err');}
+  finally{sheet.remove();ov.remove();}
+}
+
+/* ─────────────────────────────────────
+   HELPERS
+───────────────────────────────────── */
+function syncColor(colId,txtId){
+  const c=document.getElementById(colId),x=document.getElementById(txtId);
+  if(!c||!x)return;
+  c.oninput=e=>x.value=e.target.value;
+  x.oninput=e=>{if(/^#[0-9A-Fa-f]{6}$/.test(e.target.value))c.value=e.target.value;};
+}
+
+/* ─────────────────────────────────────
+   MORE MENU
+───────────────────────────────────── */
+document.getElementById('moreBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  const dd=document.getElementById('moreDd');
+  const rect=e.currentTarget.getBoundingClientRect();
+  dd.style.right=(window.innerWidth-rect.right)+'px';
+  dd.style.top=(rect.bottom+6)+'px';
+  dd.style.left='auto';
+  dd.classList.toggle('open');
+});
+document.addEventListener('click',()=>document.getElementById('moreDd').classList.remove('open'));
+document.getElementById('moreDd').addEventListener('click',e=>e.stopPropagation());
+
+function ddAction(fn){document.getElementById('moreDd').classList.remove('open');fn();}
+document.getElementById('dd-roadmapSettings').onclick=()=>ddAction(()=>{if(S)openRoadmapSettings();});
+document.getElementById('dd-cats').onclick=()=>ddAction(()=>{if(S)openCategories();});
+document.getElementById('dd-items').onclick=()=>ddAction(()=>{if(S)openItems();});
+document.getElementById('dd-ms').onclick=()=>ddAction(()=>{if(S)openMilestones();});
+document.getElementById('dd-statuses').onclick=()=>ddAction(()=>{if(S)openStatuses();});
+document.getElementById('dd-badges').onclick=()=>ddAction(()=>{if(S)openBadges();});
+document.getElementById('dd-json').onclick=()=>ddAction(()=>{if(S)openJSONEditor();});
+document.getElementById('dd-expJSON').onclick=()=>ddAction(()=>{if(S)doExportJSON();});
+document.getElementById('dd-expHTML').onclick=()=>ddAction(()=>{if(S)doExportHTML();});
+document.getElementById('dd-copyHTML').onclick=()=>ddAction(()=>{if(S)doCopyHTML();});
+document.getElementById('dd-expPNG').onclick=()=>ddAction(()=>{if(S)doExportPNG();});
+document.getElementById('dd-import').onclick=()=>ddAction(doImport);
+document.getElementById('dd-about').onclick=()=>ddAction(openAbout);
+document.getElementById('brandBtn')?.addEventListener('click',()=>openAbout());
+document.getElementById('dd-reset').onclick=()=>ddAction(()=>{
+  if(S&&!confirm(lang==='ko'?'현재 로드맵을 닫고 새로 만드시겠습니까?':'Close current roadmap and start over?'))return;
+  S=null;hist=[];histIdx=-1;
+  try{
+    localStorage.setItem(getStoreKey(),'__RESET__');
+  }catch(e){}
+  onboardStep=0;selectedTemplate=null;render();
+});
+
+/* ─────────────────────────────────────
+   EVENT BINDINGS
+───────────────────────────────────── */
+document.getElementById('btnUndo').onclick=undo;
+document.getElementById('btnRedo').onclick=redo;
+document.getElementById('langSel').onchange=e=>{
+  lang=e.target.value;if(S)S.roadmap.locale=lang;saveState();applyI18n();render();
+};
+document.getElementById('rmSubtitle').oninput=e=>{
+  if(S)S.roadmap.subtitle=e.target.value;
+};
+document.getElementById('rmSubtitle').onchange=e=>{
+  if(S){S.roadmap.subtitle=e.target.value.trim();pushHist();}
+};
+document.getElementById('rmTitle').oninput=e=>{
+  if(S) S.roadmap.title=e.target.value;
+};
+document.getElementById('rmTitle').onchange=e=>{
+  if(S){S.roadmap.title=e.target.value.trim()||'Untitled';pushHist();}
+};
+document.getElementById('darkModeBtn').onclick=()=>{
+  if(!S)return;
+  S.roadmap.darkMode=!S.roadmap.darkMode;
+  applyDarkMode(S.roadmap.darkMode);
+  saveState();
+};
+document.getElementById('searchInput').oninput=e=>{searchQ=e.target.value.trim();if(S)render();};
+document.getElementById('scaleGroup').addEventListener('click',e=>{
+  const b=e.target.closest('[data-sc]');if(!b)return;
+  tlScale=b.dataset.sc;
+  syncScaleButtons();
+  if(S){
+    S.roadmap.scale=tlScale;
+    pushHist();
+  }
+});
+let autoResizeTimer;
+window.addEventListener('resize',()=>{
+  if(tlScale!=='auto'||!S)return;
+  clearTimeout(autoResizeTimer);
+  autoResizeTimer=setTimeout(()=>render(),120);
+});
+
+document.addEventListener('keydown',e=>{
+  const meta=e.ctrlKey||e.metaKey;
+  if(meta&&e.key.toLowerCase()==='s'&&window.roadmapDesktop){e.preventDefault();doDesktopSave();return;}
+  if(meta&&e.key==='z'&&!e.shiftKey){e.preventDefault();undo();}
+  if(meta&&(e.key==='y'||(e.key==='z'&&e.shiftKey))){e.preventDefault();redo();}
+  if(e.key==='Escape')closeModal();
+});
+
+/* ─────────────────────────────────────
+   INIT
+───────────────────────────────────── */
+(function init(){
+  loadState();
+  if(S?.roadmap?.locale){lang=S.roadmap.locale;}
+  const ls=document.getElementById('langSel');
+  if(ls) ls.value=lang;
+  if(S?.roadmap?.scale){tlScale=S.roadmap.scale;}
+  syncScaleButtons();
+  applyI18n();syncUR();render();
+  desktopSavedSnapshot=snapshotForDesktop();
+  if(window.roadmapDesktop){
+    window.roadmapDesktop.onOpenRequest(()=>doDesktopOpen());
+    window.roadmapDesktop.onSaveRequest(()=>doDesktopSave());
+    window.roadmapDesktop.onSaveAsRequest(()=>doDesktopSave(true));
+    window.roadmapDesktop.onReloadRequest(()=>doDesktopReload());
+    window.roadmapDesktop.onNewRequest(()=>doDesktopNew());
+    window.roadmapDesktop.onExportHtmlRequest?.(()=>doExportHTML());
+  }
+  window.roadmapDesktopActions={
+    new:()=>doDesktopNew(),open:()=>doDesktopOpen(),save:()=>doDesktopSave(),saveAs:()=>doDesktopSave(true),reload:()=>doDesktopReload(),exportHtml:()=>doExportHTML(),
+    load:async payload=>payload.force?applyLoadedDocument(JSON.parse(payload.text),payload.path):(await confirmDiscardDesktopChanges())&&applyLoadedDocument(JSON.parse(payload.text),payload.path),hasUnsavedChanges:()=>hasDesktopUnsavedChanges()
+  };
+})();
+</script>
+</body>
+</html>

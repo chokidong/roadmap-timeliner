@@ -1,0 +1,14 @@
+{
+  "name": "@roadmap-timeliner/desktop",
+  "productName": "Roadmap Timeliner",
+  "description": "Visual Roadmap & Timeline Editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json --outDir dist",
+    "start": "npm run build && electron dist/main.js"
+  },
+  "devDependencies": { "electron": "^37.0.0" }
+}

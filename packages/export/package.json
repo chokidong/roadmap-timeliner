@@ -1,0 +1,9 @@
+{
+  "name": "@roadmap-timeliner/export",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } },
+  "files": ["dist"],
+  "dependencies": { "@roadmap-timeliner/core": "*" },
+  "scripts": { "build": "tsc -p tsconfig.json --outDir dist" }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@roadmap-timeliner/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "roadmap": "./dist/index.js" },
+  "files": ["dist"],
+  "dependencies": {
+    "@roadmap-timeliner/agent-kit": "*",
+    "@roadmap-timeliner/core": "*",
+    "@roadmap-timeliner/document-service": "*",
+    "@roadmap-timeliner/export": "*"
+  },
+  "scripts": { "build": "tsc -p tsconfig.json --outDir dist" }
+}

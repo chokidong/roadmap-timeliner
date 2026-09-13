@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Roadmap Editor AI generation schema",
+  "description": "Strict generation profile for roadmap.html version 1.0; application import validation is less strict.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "roadmap"],
+  "properties": {
+    "version": {"const": "1.0"},
+    "roadmap": {"$ref": "#/$defs/roadmap"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"},
+    "name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "color": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
+    "date": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "link": {"type": "string"},
+    "metadata": {"type": "object", "additionalProperties": true},
+    "pattern": {"enum": ["solid", "diagonal", "horizontal", "vertical", "dot", "grid", "gradient"]},
+    "shape": {"enum": ["flag", "diamond", "pin", "rocket", "star", "check", "circle", "heart", "fire", "zap", "shield", "tag", "square", "triangle"]},
+    "roadmap": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "title", "statuses", "badges", "categories", "milestones"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "title": {"$ref": "#/$defs/name"},
+        "subtitle": {"type": "string"}, "description": {"type": "string"},
+        "startDate": {"$ref": "#/$defs/date"}, "endDate": {"$ref": "#/$defs/date"},
+        "rangeLocked": {"type": "boolean", "default": false},
+        "locale": {"enum": ["ko", "en"], "default": "en"},
+        "scale": {"enum": ["auto", "week", "month", "quarter"], "default": "month"},
+        "showToday": {"type": "boolean", "default": true}, "showStatusLegend": {"type": "boolean", "default": true}, "darkMode": {"type": "boolean", "default": false},
+        "theme": {
+          "type": "object", "additionalProperties": false, "required": ["preset"],
+          "properties": {"preset": {"enum": ["default", "violet", "ocean", "forest", "sunset", "macaron", "rainbow", "darkchic"]}, "override": {"type": "object", "maxProperties": 0}}
+        },
+        "statuses": {"type": "array", "items": {"$ref": "#/$defs/status"}},
+        "badges": {"type": "array", "items": {"$ref": "#/$defs/badge"}},
+        "categories": {"type": "array", "items": {"$ref": "#/$defs/category"}},
+        "milestones": {"type": "array", "items": {"$ref": "#/$defs/milestone"}},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      },
+      "allOf": [{"if": {"required": ["rangeLocked"], "properties": {"rangeLocked": {"const": true}}}, "then": {"required": ["startDate", "endDate"]}}]
+    },
+    "status": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "color", "pattern", "border"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "name": {"$ref": "#/$defs/name"}, "color": {"$ref": "#/$defs/color"},
+        "pattern": {"$ref": "#/$defs/pattern"}, "progressPattern": {"$ref": "#/$defs/pattern"},
+        "border": {"enum": ["solid", "dashed", "dotted", "none"]},
+        "completed": {"type": "boolean", "default": false},
+        "opacity": {"type": "number", "minimum": 0, "maximum": 1, "default": 1},
+        "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "category": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "color", "items"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "name": {"$ref": "#/$defs/name"}, "color": {"$ref": "#/$defs/color"},
+        "subtitle": {"type": "string"}, "link": {"$ref": "#/$defs/link"},
+        "order": {"type": "integer", "minimum": 0, "default": 0},
+        "items": {"type": "array", "items": {"$ref": "#/$defs/item"}}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    },
+    "item": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "name": {"$ref": "#/$defs/name"},
+        "subtitles": {"type": "array", "items": {"type": "string"}}, "description": {"type": "string"},
+        "start": {"$ref": "#/$defs/date"}, "end": {"$ref": "#/$defs/date"},
+        "statusId": {"$ref": "#/$defs/id"}, "priority": {"enum": ["none", "low", "medium", "high", "critical"], "default": "none"},
+        "badges": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "progress": {"type": "integer", "minimum": 0, "maximum": 100, "default": 0},
+        "fillColor": {"$ref": "#/$defs/color"}, "link": {"$ref": "#/$defs/link"}, "metadata": {"$ref": "#/$defs/metadata"}
+      },
+      "dependentRequired": {"start": ["end"], "end": ["start"]}
+    },
+    "badge": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "color"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "type": {"enum": ["shape", "text"]},
+        "shape": {"$ref": "#/$defs/shape"}, "text": {"$ref": "#/$defs/name"},
+        "color": {"type": "object", "additionalProperties": false, "required": ["type", "value"], "properties": {"type": {"const": "solid"}, "value": {"$ref": "#/$defs/color"}}}
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"const": "shape"}}}, "then": {"required": ["shape"]}},
+        {"if": {"properties": {"type": {"const": "text"}}}, "then": {"required": ["text"]}}
+      ]
+    },
+    "milestone": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "date"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id"}, "name": {"$ref": "#/$defs/name"}, "date": {"$ref": "#/$defs/date"}, "description": {"type": "string"},
+        "marker": {"type": "object", "additionalProperties": false, "properties": {"shape": {"$ref": "#/$defs/shape"}, "color": {"$ref": "#/$defs/color"}, "size": {"type": "number", "exclusiveMinimum": 0}}},
+        "line": {"type": "object", "additionalProperties": false, "properties": {"visible": {"type": "boolean", "default": true}, "style": {"enum": ["solid", "dashed", "dotted"]}, "color": {"$ref": "#/$defs/color"}}},
+        "labelPosition": {"const": "top"}, "metadata": {"$ref": "#/$defs/metadata"}
+      }
+    }
+  }
+}
