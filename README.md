@@ -2,6 +2,25 @@
 
 A visual roadmap & timeline editor and npm workspace for editing roadmap JSON with consistent validation rules across Desktop, CLI, and MCP.
 
+## Install
+
+### Desktop app
+
+Download the installer for your operating system from the [latest GitHub Release](https://github.com/chokidong/roadmap-timeliner/releases/latest).
+
+- **macOS**: Open the downloaded `.dmg` and drag Roadmap Timeliner into Applications.
+- **Windows**: Run the downloaded `Setup.exe` and follow the installer.
+
+### Codex agent kit
+
+Install the published agent kit, then restart Codex:
+
+```sh
+npx -y @roadmap-timeliner/agent-kit install
+```
+
+Once installed, ask Codex to create, validate, or edit a roadmap JSON file.
+
 ## Overview
 
 Roadmap Timeliner provides:
@@ -16,7 +35,7 @@ Roadmap Timeliner provides:
 
 ---
 
-## Getting Started
+## Develop locally
 
 Requires Node.js 20 or higher.
 
@@ -71,13 +90,13 @@ npm run roadmap -- setup [--target all|claude|cursor|codex]
 
 ## MCP Server
 
-Run the stdio MCP server directly or via package:
+Run the stdio MCP server from a local clone:
 
 ```sh
 node packages/mcp/dist/index.js
-# or via npx
-npx -y @roadmap-timeliner/mcp
 ```
+
+> `@roadmap-timeliner/mcp` is not currently published to npm. Claude Desktop and Cursor MCP setup therefore requires a local clone until the MCP package is released.
 
 ### Available Tools:
 1. `inspect_roadmap`: Read roadmap metadata, categories, item IDs, statuses, and milestones.
@@ -92,7 +111,7 @@ npx -y @roadmap-timeliner/mcp
 
 ## AI One-Click Setup & Skills
 
-Quickly register the Roadmap Timeliner MCP server and skills with your preferred AI coding environment:
+From a local clone, register the Roadmap Timeliner MCP server and skills with your preferred AI coding environment:
 
 ```sh
 # Automatic setup for all detected environments (Claude, Cursor, Codex, Antigravity / Gemini)
