@@ -1,10 +1,17 @@
 {
   "name": "@roadmap-timeliner/agent-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist/setup.js",
   "types": "./dist/setup.d.ts",
-  "bin": { "roadmap-agent": "./dist/index.js" },
-  "files": ["dist", "skills"],
-  "scripts": { "build": "tsc -p tsconfig.json --outDir dist && node scripts/sync-schema.mjs" }
+  "bin": {
+    "roadmap-agent": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "skills"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json --outDir dist && node scripts/sync-schema.mjs"
+  }
 }
