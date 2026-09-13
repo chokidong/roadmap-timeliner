@@ -32,6 +32,20 @@ npm run desktop:roadmap
 - `npm run desktop:roadmap` automatically loads `./roadmap.json` once the window is ready.
 - You can also load any custom file: `npm run desktop -- /path/to/roadmap.json`.
 
+### Desktop installer builds
+
+Create an installer from a matching operating system:
+
+```sh
+# macOS: apps/desktop/release/*.dmg
+npm run dist:mac --workspace @roadmap-timeliner/desktop
+
+# Windows: apps/desktop/release/*Setup*.exe
+npm run dist:win --workspace @roadmap-timeliner/desktop
+```
+
+The repository's GitHub Actions workflow can build both installers and attach them to a GitHub Release whenever a `desktop-v*` tag is pushed. See `.github/workflows/desktop-release.yml`.
+
 ---
 
 ## CLI

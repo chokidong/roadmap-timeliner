@@ -4,8 +4,12 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const roadmapHtml = resolve(here, '../../../roadmap.html');
-const iconPath = resolve(here, '../assets/icon.png');
+const roadmapHtml = app.isPackaged
+  ? join(process.resourcesPath, 'roadmap.html')
+  : resolve(here, '../../../roadmap.html');
+const iconPath = app.isPackaged
+  ? join(process.resourcesPath, 'assets', 'icon.png')
+  : resolve(here, '../assets/icon.png');
 let mainWindow: BrowserWindow | undefined;
 let allowingClose = false;
 
