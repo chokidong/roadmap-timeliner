@@ -45,7 +45,7 @@ When a roadmap request creates or saves a local JSON file, validate it and then 
 - On Windows, check only these conventional executable paths, in order, then launch the first existing match with the JSON path as its argument:
   1. `%LOCALAPPDATA%\\Programs\\Roadmap Timeliner\\Roadmap Timeliner.exe`
   2. `C:\\Program Files\\Roadmap Timeliner\\Roadmap Timeliner.exe`
-  Run it from PowerShell with `Start-Process -FilePath <app-path> -ArgumentList <absolute-json-path>`. Do not search any other directories. If neither path exists, ask the user for the installed app location.
+  Run it from PowerShell with `Start-Process -FilePath <app-path> -ArgumentList <absolute-json-path>`. Do not search any other directories. If neither path exists, do not launch anything: give the GitHub Releases download link and offer the user a chance to provide a custom installed app path.
 - If the desktop app is unavailable, tell the user to download the appropriate `.dmg` or `Setup.exe` from [GitHub Releases](https://github.com/chokidong/roadmap-timeliner/releases/latest), install it, and open the generated JSON through **File → Open**. Keep the saved JSON path in the response.
 
 If the user asks for JSON only, return only the JSON and do not create, save, or launch a local artifact. For an existing document, preserve the user's requested destination and open that exact path after a successful save.
