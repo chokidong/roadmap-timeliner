@@ -3,12 +3,13 @@
   "productName": "Roadmap Timeliner",
   "description": "Visual Roadmap & Timeline Editor",
   "author": "Roadmap Timeliner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc -p tsconfig.json --outDir dist",
+    "generate:win-icon": "node --input-type=module -e \"import pngToIco from 'png-to-ico'; import { writeFile } from 'node:fs/promises'; const icon = await pngToIco('assets/icon.png'); await writeFile('assets/icon.ico', icon);\"",
     "start": "npm run build && electron dist/main.js",
     "dist": "npm run build && electron-builder",
     "dist:mac": "npm run dist -- --mac",
@@ -40,15 +41,20 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["universal"]
+          "arch": [
+            "universal"
+          ]
         }
       ]
     },
     "win": {
+      "icon": "assets/icon.ico",
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -59,6 +65,7 @@
   },
   "devDependencies": {
     "electron": "37.10.3",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "png-to-ico": "^3.0.2"
   }
 }

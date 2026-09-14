@@ -23,7 +23,7 @@ function showAboutDialog(): void {
     type: 'info' as const,
     title: 'About Roadmap Timeliner',
     message: 'Roadmap Timeliner',
-    detail: 'Version 0.1.0\n\nA visual roadmap and timeline editor for modern planning.\nSupports JSON schema validation, AI Agent integration, and export formats.\n\nhttps://github.com/chokidong/roadmap-timeliner\nCopyright © 2026 Roadmap Timeliner',
+    detail: `Version ${app.getVersion()}\n\nA visual roadmap and timeline editor for modern planning.\nSupports JSON schema validation, AI Agent integration, and export formats.\n\nhttps://github.com/chokidong/roadmap-timeliner\nCopyright © 2026 Roadmap Timeliner`,
     icon: iconPath,
     buttons: ['OK']
   };
