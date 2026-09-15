@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdtemp, rm, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { mergeMcpConfig, runSetup, getClaudeConfigPath, getCursorConfigPath, getCodexSkillPath } from './setup.js';
+import { mergeMcpConfig, runSetup } from './setup.js';
 
 describe('setup module', () => {
   let tempDir: string;
@@ -51,24 +51,32 @@ describe('setup module', () => {
       target: 'all'
     });
 
-    expect(results.length).toBe(5);
-    const claudeResult = results.find(r => r.target === 'claude');
-    const cursorResult = results.find(r => r.target === 'cursor');
+    expect(results.length).toBe(7);
+    const claudeResults = results.filter(r => r.target === 'claude');
+    const cursorResults = results.filter(r => r.target === 'cursor');
     const codexResult = results.find(r => r.target === 'codex');
     const agyResults = results.filter(r => r.target === 'antigravity');
 
-    expect(claudeResult?.success).toBe(true);
-    expect(cursorResult?.success).toBe(true);
+    expect(claudeResults).toHaveLength(2);
+    expect(cursorResults).toHaveLength(2);
+    expect(claudeResults.every(r => r.success)).toBe(true);
+    expect(cursorResults.every(r => r.success)).toBe(true);
     expect(codexResult?.success).toBe(true);
     expect(agyResults.length).toBe(2);
     expect(agyResults[0]?.success).toBe(true);
     expect(agyResults[1]?.success).toBe(true);
 
-    const claudeContent = JSON.parse(await readFile(claudeResult!.path, 'utf8'));
+    const claudeMcp = claudeResults.find(r => r.message.includes('MCP'))!;
+    const claudeSkill = claudeResults.find(r => r.message.includes('skill'))!;
+    const claudeContent = JSON.parse(await readFile(claudeMcp.path, 'utf8'));
     expect(claudeContent.mcpServers.roadmap).toBeDefined();
+    expect(await readFile(join(claudeSkill.path, 'SKILL.md'), 'utf8')).toContain('roadmap-timeliner');
 
-    const cursorContent = JSON.parse(await readFile(cursorResult!.path, 'utf8'));
+    const cursorMcp = cursorResults.find(r => r.message.includes('MCP'))!;
+    const cursorSkill = cursorResults.find(r => r.message.includes('skill'))!;
+    const cursorContent = JSON.parse(await readFile(cursorMcp.path, 'utf8'));
     expect(cursorContent.mcpServers.roadmap).toBeDefined();
+    expect(await readFile(join(cursorSkill.path, 'SKILL.md'), 'utf8')).toContain('roadmap-timeliner');
 
     const agyContent = JSON.parse(await readFile(agyResults[0]!.path, 'utf8'));
     expect(agyContent.mcpServers.roadmap).toBeDefined();
