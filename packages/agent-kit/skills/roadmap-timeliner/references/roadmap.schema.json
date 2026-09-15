@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Roadmap Editor AI generation schema",
-  "description": "Strict generation profile for roadmap.html version 1.0; application import validation is less strict.",
+  "title": "Roadmap Timeliner desktop document schema",
+  "description": "Document format 1.0 supported by the desktop editor in roadmap.html. Strict generation rejects unknown fields; compatible imports preserve extra fields while validating known properties. Application release versions are independent of this format version.",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "roadmap"],
@@ -16,7 +16,7 @@
     "date": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
     "link": {"type": "string"},
     "metadata": {"type": "object", "additionalProperties": true},
-    "pattern": {"enum": ["solid", "diagonal", "horizontal", "vertical", "dot", "grid", "gradient"]},
+    "pattern": {"description": "Status fill pattern; -lines variants draw thin colored lines on white. The same values apply to progressPattern. Labels have no background.", "enum": ["solid", "diagonal", "horizontal", "vertical", "dot", "grid", "gradient", "diagonal-lines", "horizontal-lines", "vertical-lines", "grid-lines"]},
     "shape": {"enum": ["flag", "diamond", "pin", "rocket", "star", "check", "circle", "heart", "fire", "zap", "shield", "tag", "square", "triangle"]},
     "roadmap": {
       "type": "object", "additionalProperties": false,
@@ -29,6 +29,7 @@
         "locale": {"enum": ["ko", "en"], "default": "en"},
         "scale": {"enum": ["auto", "week", "month", "quarter"], "default": "month"},
         "showToday": {"type": "boolean", "default": true}, "showStatusLegend": {"type": "boolean", "default": true}, "darkMode": {"type": "boolean", "default": false},
+        "style": {"enum": ["default", "card"], "default": "default", "description": "default uses the standard timeline; card uses numbered category cards and a distinct date index. Both use page-level vertical scrolling. Independent of theme and darkMode."},
         "theme": {
           "type": "object", "additionalProperties": false, "required": ["preset"],
           "properties": {"preset": {"enum": ["default", "violet", "ocean", "forest", "sunset", "macaron", "rainbow", "darkchic"]}, "override": {"type": "object", "maxProperties": 0}}
@@ -45,7 +46,7 @@
       "type": "object", "additionalProperties": false, "required": ["id", "name", "color", "pattern", "border"],
       "properties": {
         "id": {"$ref": "#/$defs/id"}, "name": {"$ref": "#/$defs/name"}, "color": {"$ref": "#/$defs/color"},
-        "pattern": {"$ref": "#/$defs/pattern"}, "progressPattern": {"$ref": "#/$defs/pattern"},
+        "pattern": {"$ref": "#/$defs/pattern"}, "progressPattern": {"$ref": "#/$defs/pattern", "description": "Progress area pattern. When omitted, inherits status.pattern; explicit solid remains solid even when the base uses lines."},
         "border": {"enum": ["solid", "dashed", "dotted", "none"]},
         "completed": {"type": "boolean", "default": false},
         "opacity": {"type": "number", "minimum": 0, "maximum": 1, "default": 1},
@@ -70,7 +71,7 @@
         "statusId": {"$ref": "#/$defs/id"}, "priority": {"enum": ["none", "low", "medium", "high", "critical"], "default": "none"},
         "badges": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
         "progress": {"type": "integer", "minimum": 0, "maximum": 100, "default": 0},
-        "fillColor": {"$ref": "#/$defs/color"}, "link": {"$ref": "#/$defs/link"}, "metadata": {"$ref": "#/$defs/metadata"}
+        "fillColor": {"$ref": "#/$defs/color", "description": "Per-item fill or line ink color; takes precedence over status.color. Category color is the fallback when no status color is available."}, "link": {"$ref": "#/$defs/link"}, "metadata": {"$ref": "#/$defs/metadata"}
       },
       "dependentRequired": {"start": ["end"], "end": ["start"]}
     },

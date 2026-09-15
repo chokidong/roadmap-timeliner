@@ -33,6 +33,14 @@ export function getCursorConfigPath(home: string): string {
   return join(home, '.cursor', 'mcp.json');
 }
 
+export function getClaudeSkillPath(home: string): string {
+  return join(home, '.claude', 'skills', 'roadmap-timeliner');
+}
+
+export function getCursorSkillPath(home: string): string {
+  return join(home, '.cursor', 'skills', 'roadmap-timeliner');
+}
+
 export function getCodexSkillPath(home: string): string {
   return process.env.CODEX_HOME
     ? join(process.env.CODEX_HOME, 'skills', 'roadmap-timeliner')
@@ -44,7 +52,7 @@ export function getAntigravityMcpConfigPath(home: string): string {
 }
 
 export function getAntigravitySkillPath(home: string): string {
-  return join(home, '.gemini', 'config', 'skills', 'roadmap-timeliner');
+  return join(home, '.gemini', 'skills', 'roadmap-timeliner');
 }
 
 export async function mergeMcpConfig(
@@ -116,6 +124,13 @@ export async function runSetup(options: SetupOptions = {}): Promise<SetupTargetR
         message: error?.message || String(error)
       });
     }
+    const claudeSkillPath = getClaudeSkillPath(home);
+    try {
+      await installCodexSkill(claudeSkillPath);
+      results.push({ target: 'claude', path: claudeSkillPath, success: true, message: 'Claude Code skill installed' });
+    } catch (error: any) {
+      results.push({ target: 'claude', path: claudeSkillPath, success: false, message: error?.message || String(error) });
+    }
   }
 
   if (target === 'all' || target === 'cursor') {
@@ -135,6 +150,13 @@ export async function runSetup(options: SetupOptions = {}): Promise<SetupTargetR
         success: false,
         message: error?.message || String(error)
       });
+    }
+    const cursorSkillPath = getCursorSkillPath(home);
+    try {
+      await installCodexSkill(cursorSkillPath);
+      results.push({ target: 'cursor', path: cursorSkillPath, success: true, message: 'Cursor skill installed' });
+    } catch (error: any) {
+      results.push({ target: 'cursor', path: cursorSkillPath, success: false, message: error?.message || String(error) });
     }
   }
 

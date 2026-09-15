@@ -1,3 +1,4 @@
+import { ROADMAP_PATTERNS, ROADMAP_BORDERS, ROADMAP_PRIORITIES, ROADMAP_SCALES, ROADMAP_SHAPES } from './types.js';
 import { hasOwn, isObject } from './json.js';
 import type { Issue, JsonObject, JsonValue, RoadmapDocument, ValidationMode, ValidationResult } from './types.js';
 import { Ajv2020 } from 'ajv/dist/2020.js';
@@ -6,15 +7,26 @@ import schema from '../../../roadmap.schema.json' with { type: 'json' };
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
 const COLOR = /^#[0-9A-Fa-f]{6}$/;
-const PATTERNS = new Set(['solid', 'diagonal', 'horizontal', 'vertical', 'dot', 'grid', 'gradient']);
-const BORDERS = new Set(['solid', 'dashed', 'dotted', 'none']);
-const PRIORITIES = new Set(['none', 'low', 'medium', 'high', 'critical']);
-const SCALES = new Set(['auto', 'week', 'month', 'quarter']);
-const SHAPES = new Set(['flag', 'diamond', 'pin', 'rocket', 'star', 'check', 'circle', 'heart', 'fire', 'zap', 'shield', 'tag', 'square', 'triangle']);
+const PATTERNS = new Set<string>(ROADMAP_PATTERNS);
+const BORDERS = new Set<string>(ROADMAP_BORDERS);
+const PRIORITIES = new Set<string>(ROADMAP_PRIORITIES);
+const SCALES = new Set<string>(ROADMAP_SCALES);
+const SHAPES = new Set<string>(ROADMAP_SHAPES);
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 const addFormats: (instance: Ajv2020) => void = ((formatsModule as unknown as { default?: (instance: Ajv2020) => void }).default ?? formatsModule) as (instance: Ajv2020) => void;
 addFormats(ajv);
 const strictSchema = ajv.compile(schema);
+// Compatible imports preserve extra fields, but validate all declared desktop
+// settings using the same schema. Never remove or normalize user data here.
+const compatibleProfile = JSON.parse(JSON.stringify(schema));
+function allowUnknownFields(node: unknown): void {
+  if (!node || typeof node !== 'object') return;
+  const object = node as Record<string, unknown>;
+  if (object.additionalProperties === false) delete object.additionalProperties;
+  Object.values(object).forEach(allowUnknownFields);
+}
+allowUnknownFields(compatibleProfile);
+const compatibleSchema = ajv.compile(compatibleProfile);
 
 function calendarDate(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -55,8 +67,9 @@ export function validateDocument(input: unknown, mode: ValidationMode = 'strict'
     if (hasOwn(value, field) && typeof value[field] !== 'string') add(pointer(path.slice(1), field), 'INVALID_TYPE', 'String expected.');
   };
 
-  if (mode === 'strict' && !strictSchema(input)) {
-    for (const schemaError of strictSchema.errors ?? []) {
+  const schemaValidator = mode === 'strict' ? strictSchema : compatibleSchema;
+  if (!schemaValidator(input)) {
+    for (const schemaError of schemaValidator.errors ?? []) {
       add(schemaError.instancePath || '/', `SCHEMA_${schemaError.keyword.toUpperCase()}`, schemaError.message ?? 'Schema validation failed.');
     }
   }
@@ -80,6 +93,8 @@ export function validateDocument(input: unknown, mode: ValidationMode = 'strict'
   if (roadmap.rangeLocked === true && (!calendarDate(roadmap.startDate) || !calendarDate(roadmap.endDate))) add('/roadmap', 'LOCKED_RANGE_REQUIRES_DATES', 'Locked range requires startDate and endDate.');
   if (hasOwn(roadmap, 'locale') && roadmap.locale !== 'ko' && roadmap.locale !== 'en') add('/roadmap/locale', 'INVALID_LOCALE', 'Locale must be ko or en.');
   if (hasOwn(roadmap, 'scale') && (typeof roadmap.scale !== 'string' || !SCALES.has(roadmap.scale))) add('/roadmap/scale', 'INVALID_SCALE', 'Unsupported scale.');
+
+  if (hasOwn(roadmap, 'style') && roadmap.style !== 'default' && roadmap.style !== 'card') add('/roadmap/style', 'INVALID_STYLE', 'Style must be default or card.');
 
   if (!checkArray(roadmap.statuses, '/roadmap/statuses') || !checkArray(roadmap.badges, '/roadmap/badges') || !checkArray(roadmap.categories, '/roadmap/categories') || !checkArray(roadmap.milestones, '/roadmap/milestones')) return { valid: false, errors, warnings };
   const statusIds = new Set<string>();

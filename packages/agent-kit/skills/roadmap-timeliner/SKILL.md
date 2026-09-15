@@ -7,13 +7,20 @@ description: Create, inspect, validate, update, save, or export roadmap JSON, th
 
 Use the roadmap tool contract for JSON work. Start by reading the current document with `inspect_roadmap` or `roadmap inspect <path>` when a file already exists.
 
-- For new roadmap data, read [the generation profile](references/generation-profile.md) before drafting JSON.
-- Use `strict` validation for a newly generated roadmap. Use `compatible` when opening an existing file so unrecognized optional fields are retained.
+- For new roadmap data or changes to style, theme, fill, or progress, read [the generation profile](references/generation-profile.md). [The packaged schema](references/roadmap.schema.json) describes the desktop document contract, including allowed fields and enums. Do not infer the JSON format version from the desktop app release number.
+- Use `strict` validation for a newly generated roadmap. Use `compatible` when opening an existing file: unknown optional fields are retained, while declared fields still require valid types and values.
 - Keep existing IDs and fields unless the user asks to remove them. Apply item changes by ID, not by array position.
 - Derive dates, status, progress, priority, and completion only from the supplied source. If they are unknown, omit the optional field and preserve the uncertainty in `roadmap.metadata.assumptions` when relevant.
 - Validate after every generated or modified document. Report validation errors with their path and code.
 - Prefer a preview/diff before a broad edit. When the user asks to save or export to a specific target, perform that requested operation after validation.
 - Use JSON export for data exchange. Use standalone HTML export for an editable single-page editor. Use a static HTML fragment only for systems that render supplied HTML; it is not an editable roadmap.
+
+## Desktop appearance
+
+- Keep `roadmap.style` independent of `roadmap.theme` and `darkMode`. Changing layout should not recolor items.
+- Fill patterns belong to statuses (`pattern`, `progressPattern`); items reference them by `statusId`. Use an item’s `fillColor` to override the ink/fill color, not to select a pattern.
+- For white backgrounds with colored lines, use the `-lines` variants in the generation profile. To combine them with solid progress, explicitly set `progressPattern: "solid"`; omitting it inherits the base pattern.
+- Label backgrounds, corner radii, and scrolling are desktop rendering behavior, not JSON properties. Do not invent fields for them.
 
 ## Tool routing
 

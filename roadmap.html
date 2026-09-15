@@ -15,7 +15,7 @@ html{font-size:14px;-webkit-font-smoothing:antialiased;}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',Helvetica,sans-serif;
   background:#f4f6fa;color:#111827;
-  height:100vh;display:flex;flex-direction:column;overflow:hidden;
+  min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:clip;background:#fff;
 }
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
 input,select,textarea{font-family:inherit;}
@@ -256,13 +256,13 @@ body.dark-mode .brand-text{color:#f3f4f6!important;}
 /* ═══════════════════════════════════════════════════════
    TIMELINE LAYOUT
 ═══════════════════════════════════════════════════════ */
-.app-body{flex:1;display:flex;overflow:hidden;}
+.app-body{flex:1;min-width:0;display:flex;}
 .empty-timeline{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;background:linear-gradient(135deg,#f8faff,#fff);}
 .empty-timeline-card{max-width:420px;text-align:center;padding:36px;border:1px dashed #c7d2fe;border-radius:16px;background:#fff;box-shadow:0 10px 30px rgba(99,102,241,.08);}
 .empty-timeline-card h2{margin:0 0 8px;font-size:20px;color:#1f2937;}
 .empty-timeline-card p{margin:0 0 20px;font-size:13px;line-height:1.55;color:#6b7280;}
 .tl-wrap{
-  flex:1;overflow:auto;background:#fff;position:relative;
+  min-width:0;overflow-x:auto;overflow-y:hidden;background:#fff;position:relative;isolation:isolate;
 }
 
 /* Header row */
@@ -407,7 +407,7 @@ body.dark-mode .brand-text{color:#f3f4f6!important;}
 }
 .bar-prog{
   position:absolute;left:0;top:0;bottom:0;
-  background:rgba(0,0,0,.1);z-index:1;border-radius:20px 0 0 20px;
+  background:rgba(0,0,0,.1);z-index:1;border-radius:0;
 }
 .bar-prog::after{content:'';position:absolute;inset:0;border-radius:inherit;}
 .bar-prog.prog-stripe::after,.bar-prog.prog-diagonal::after{background:repeating-linear-gradient(-50deg,transparent 0,transparent 5px,rgba(255,255,255,.25) 5px,rgba(255,255,255,.25) 10px);}
@@ -607,7 +607,15 @@ textarea.fi{resize:vertical;min-height:70px;}
 .roadmap-sub{display:block;width:100%;border:0;outline:none;background:transparent;font-size:15px;line-height:1.5;color:#64748b;margin:0;padding:3px 10px;border-radius:6px;}
 .roadmap-sub:focus{background:#f8fafc;box-shadow:0 0 0 2px #6366f1;}
 .roadmap-sub::placeholder{color:#94a3b8;}
-.tl-wrap{padding:24px 32px 48px;overscroll-behavior-x:contain;}
+/* The document owns vertical scrolling. Only the timeline pans horizontally.
+   Its separate sticky index follows the same horizontal offset. */
+.tl-frame{flex:1;min-width:0;padding:24px 32px 48px;background:#fff;}
+.tl-wrap{overscroll-behavior-x:contain;}
+.tl-date-index{position:sticky;top:0;z-index:50;background:#fff;}
+.tl-index-scroll{overflow:hidden;}
+.tl-index-scroll .tl-header{position:relative;}
+.tl-wrap .tl-header{display:none;}
+body.dark-mode .tl-date-index{background:#111827;}
 .roadmap-canvas{margin:0 auto;}
 .tl-header{height:76px;border-bottom:0;}
 .tl-header,.tl-cat-row,.tl-item-row{isolation:isolate;}
@@ -644,7 +652,9 @@ textarea.fi{resize:vertical;min-height:70px;}
 .bar-pill.bdr-none{border-color:transparent;}
 .bar-nm{text-align:center;font-size:12px;}
 .bar-badges{position:absolute;right:10px;margin:0;}
-.bar-prog{background:rgba(0,0,0,.06);border-radius:8px 0 0 8px;}
+/* The outer pill alone clips corners; rounding the inset progress layer
+   independently leaves white crescents on line-only base fills. */
+.bar-prog{background:rgba(0,0,0,.06);}
 .pat-stripe::before,.pat-dot::before{opacity:.25;}
 .bdr-dashed,.bdr-dotted{border-width:2px;}
 .gl-today{width:1px;background:#e8bd65;box-shadow:none;opacity:.6;}
@@ -752,8 +762,68 @@ body.dark-mode .modal .bdg-opt.sel{background:#312e81;border-color:#818cf8;color
 body.dark-mode .statusbar{background:#182235;border-color:#263244;color:#94a3b8;}
 body.dark-mode .ms-tag{background:#182235;}
 body.dark-mode .dark-mode-btn{background:#3730a3;color:#e0e7ff;}
-@media(max-width:700px){.header-top{padding:20px 12px;grid-template-columns:64px minmax(0,1fr) 88px;}.roadmap-title{font-size:26px;}.roadmap-sub{font-size:12px;}.tl-wrap{padding:16px 0 32px;}.roadmap-canvas{margin:0;}.tl-header-label,.tl-cat-label,.tl-item-label{z-index:60;}}
+@media(max-width:700px){.header-top{padding:20px 12px;grid-template-columns:64px minmax(0,1fr) 88px;}.roadmap-title{font-size:26px;}.roadmap-sub{font-size:12px;}.tl-frame{padding:16px 0 32px;}.roadmap-canvas{margin:0;}.tl-header-label,.tl-cat-label,.tl-item-label{z-index:60;}}
 
+
+.export-sheet--card{background:#fff;}
+.export-sheet .tl-header{position:relative;top:auto;}
+
+/* Shared viewport: one scroll owner; rows below the frozen date header. */
+.roadmap-canvas{position:relative;}
+.tl-header{z-index:50;}
+.tl-header-label{z-index:40;}
+.tl-cat-row,.tl-item-row{z-index:0;}
+.cat-info{min-width:0;max-width:100%;}
+.cat-nm,.cat-sb{overflow:hidden;text-overflow:ellipsis;}
+.roadmap-stage--card{background:#fff;}
+.roadmap-stage--card .tl-frame{padding:24px 32px 48px;}
+.roadmap-stage--card .empty-timeline{border:1px solid #e2e8f0;border-radius:20px;}
+body.dark-mode .tl-frame{background:#111827;}
+body.dark-mode .roadmap-stage--card{background:#111827;}
+body.dark-mode .roadmap-stage--card .tl-frame,
+body.dark-mode .roadmap-stage--card .empty-timeline{border-color:#334155;box-shadow:0 8px 28px rgba(0,0,0,.25);}
+@media(max-width:700px){
+  .header-top{grid-template-columns:minmax(0,1fr) auto;gap:12px;}
+  .header-center{grid-column:1 / -1;grid-row:2;}
+  .header-left{grid-column:1;grid-row:1;}
+  .header-right{grid-column:2;grid-row:1;}
+  .roadmap-stage--card .tl-frame{padding:12px 12px 32px;}
+}
+
+
+/* Card design: numbered sections, an editorial date index, and compact lanes.
+   The same design class travels with the canvas into HTML/PNG exports. */
+.roadmap-design--card{--card-line:#e2e8f0;--card-ink:#0f172a;--card-muted:#64748b;--card-surface:#fff;--card-soft:#f8fafc;}
+.roadmap-design--card .tl-header{height:86px;border-bottom:1px solid var(--card-line);background:var(--card-surface);}
+.roadmap-design--card .tl-header-label{background:var(--card-surface);color:var(--card-muted);font-size:10px;letter-spacing:1.8px;padding:0 24px;}
+.roadmap-design--card .tl-hcell{align-items:flex-start;padding:14px 14px 0;border-left:1px solid var(--card-line);}
+.roadmap-design--card .tl-hcell .hm{font-size:16px;letter-spacing:-.5px;font-weight:800;color:var(--card-ink);}
+.roadmap-design--card .tl-hcell .hs{font-size:10px;color:var(--card-muted);letter-spacing:1px;}
+.roadmap-design--card .tl-hcell.today-col .hm{background:var(--card-ink);color:var(--card-surface);padding:3px 8px;border-radius:6px;margin:-3px -8px;}
+.roadmap-design--card .tl-category-group{margin:20px 1px 24px;border-radius:16px;box-shadow:0 0 0 1px var(--card-line),0 3px 10px rgba(15,23,42,.035);overflow:clip;}
+.roadmap-design--card .tl-cat-row{height:76px;min-height:76px;padding:0;margin:0;border-bottom:1px solid var(--card-line);background:var(--card-soft);}
+.roadmap-design--card .tl-cat-label{height:75px;border-radius:0;background:var(--card-soft);padding:16px 24px;gap:12px;}
+.roadmap-design--card .tl-cat-label::before{display:none;}
+.card-category-number{display:none;}
+.roadmap-design--card .card-category-number{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;border-radius:10px;background:color-mix(in srgb,var(--category-color) 12%,var(--card-surface));color:color-mix(in srgb,var(--category-color) 75%,var(--card-ink));font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;}
+.roadmap-design--card .cat-nm{font-size:15px;letter-spacing:-.3px;color:var(--card-ink);}
+.roadmap-design--card .cat-sb{font-size:11px;font-weight:400;color:var(--card-muted);}
+.roadmap-design--card .tl-cat-row .cat-cells{height:75px;border-radius:0;background:var(--card-soft);}
+.roadmap-design--card .cat-gap-lines{display:none;}
+.roadmap-design--card .tl-item-row{min-height:72px;background:var(--card-surface);border-bottom:1px solid var(--card-line);}
+.roadmap-design--card .tl-item-row:last-child{border-bottom:0;}
+.roadmap-design--card .tl-item-label{padding:14px 24px;background:var(--card-surface);border-right:1px solid var(--card-line);}
+.roadmap-design--card .tl-item-row:hover,.roadmap-design--card .tl-item-row:hover .tl-item-label{background:var(--card-soft);}
+.roadmap-design--card .item-nm{font-size:12px;font-weight:600;color:var(--card-ink);}
+.roadmap-design--card .item-subs{font-size:10px;color:var(--card-muted);}
+.roadmap-design--card .bar-outer{height:28px;}
+.roadmap-design--card .bar-pill{border-radius:14px;border-width:1px;justify-content:flex-start;padding:0 16px;}
+.roadmap-design--card .bar-nm{font-size:10px;font-weight:600;}
+body.dark-mode .roadmap-design--card .tl-cat-label,body.dark-mode .roadmap-design--card .tl-cat-row .cat-cells{background:var(--card-soft);}
+body.dark-mode .roadmap-design--card{--card-line:#334155;--card-ink:#e2e8f0;--card-muted:#94a3b8;--card-surface:#111827;--card-soft:#182235;}
+
+/* Line-only bars use plain text without a label background. */
+.bar-pill.line-pattern-label .bar-nm{color:#1e293b;}
 </style>
 </head>
 <body>
@@ -882,7 +952,7 @@ body.dark-mode .dark-mode-btn{background:#3730a3;color:#e0e7ff;}
 </div>
 
 <!-- ════════════════════════ BODY ════════════════════════ -->
-<div id="appContent" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
+<div id="appContent" style="min-width:0;min-height:0;flex:1;display:flex;flex-direction:column;"></div>
 
 <!-- ════════════════════════ STATUS BAR ════════════════════════ -->
 <div class="statusbar" id="statusbar">
@@ -918,8 +988,8 @@ body.dark-mode .dark-mode-btn{background:#3730a3;color:#e0e7ff;}
 /* ─────────────────────────────────────
    SHAPE SVG
 ───────────────────────────────────── */
-const MS_SHAPES=['flag','diamond','pin','rocket','star','check','circle'];
-const BDG_SHAPES=['star','heart','fire','zap','shield','tag','circle'];
+const MS_SHAPES=['flag','diamond','pin','rocket','star','check','circle','heart','fire','zap','shield','tag','square','triangle'];
+const BDG_SHAPES=['flag','diamond','pin','rocket','star','check','circle','heart','fire','zap','shield','tag','square','triangle'];
 
 function shapeSVG(shape, color='#F59E0B', sz=15){
   const s={
@@ -955,9 +1025,9 @@ const MSGS={
   en:{
     manageSection:'Manage',addSection:'Add',dataSection:'Data & Export',
     roadmapSettings:'Roadmap settings',manageCats:'Categories',manageItems:'Items',manageMs:'Milestones',
-    todayDateLine:'Today date line',statusLegend:'Status legend',themePalette:'Theme palette',themeHint:'Applies matching category colors and darker item progress fills.',
+    todayDateLine:'Today date line',statusLegend:'Status legend',layoutStyle:'Layout style',styleDefault:'Default',styleCard:'Card view',styleHint:'Numbered category cards with a distinct date index and timeline style. Colors are controlled separately.',themePalette:'Theme palette',themeHint:'Applies matching category colors and darker item progress fills.',
     applyTheme:'Apply theme',themeDefault:'Default',themeViolet:'Violet',themeOcean:'Ocean',themeForest:'Forest',themeSunset:'Sunset',themeMacaron:'Pastel Macaron',themeRainbow:'Rainbow',themeDarkchic:'Dark & Chic',
-    fill:'Fill',progressFillPattern:'Progress fill pattern',fillColor:'Fill color',solid:'Solid',diagonal:'Diagonal',horizontalLines:'Horizontal lines',verticalLines:'Vertical lines',dots:'Dots',grid:'Grid',gradient:'Gradient',
+    fill:'Fill',progressFillPattern:'Progress fill pattern',fillColor:'Fill color',solid:'Solid',diagonal:'Diagonal',horizontalLines:'Horizontal lines',verticalLines:'Vertical lines',dots:'Dots',grid:'Grid',gradient:'Gradient',diagonalLineOnly:'Diagonal · white background',horizontalLineOnly:'Horizontal lines · white background',verticalLineOnly:'Vertical lines · white background',gridLineOnly:'Grid · white background',
     addCat:'Category',addItem:'Item',addMs:'Milestone',
     statuses:'Statuses',badges:'Badges',json:'JSON Editor',
     import:'Import JSON',reset:'New Roadmap',
@@ -997,9 +1067,9 @@ const MSGS={
   ko:{
     manageSection:'데이터 관리',addSection:'새로 추가',dataSection:'데이터 및 내보내기',
     roadmapSettings:'로드맵 관리 설정',manageCats:'카테고리 관리',manageItems:'항목 관리',manageMs:'마일스톤 관리',
-    todayDateLine:'오늘 날짜선',statusLegend:'상태 범례',themePalette:'테마 팔레트',themeHint:'카테고리 색상과 더 진한 아이템 진행률 색상에 적용됩니다.',
+    todayDateLine:'오늘 날짜선',statusLegend:'상태 범례',layoutStyle:'스타일',styleDefault:'기본',styleCard:'카드뷰',styleHint:'카테고리별 카드와 새로운 날짜 인덱스·일정 스타일을 적용합니다. 컬러 테마는 별도로 설정합니다.',themePalette:'테마 팔레트',themeHint:'카테고리 색상과 더 진한 아이템 진행률 색상에 적용됩니다.',
     applyTheme:'테마 적용',themeDefault:'기본',themeViolet:'바이올렛',themeOcean:'오션',themeForest:'포레스트',themeSunset:'선셋',themeMacaron:'파스텔 마카롱',themeRainbow:'레인보우',themeDarkchic:'다크 앤 시크',
-    fill:'채우기',progressFillPattern:'진행률 채우기 패턴',fillColor:'채우기 색상',solid:'솔리드',diagonal:'다이아고널',horizontalLines:'가로줄',verticalLines:'세로줄',dots:'도트',grid:'격자',gradient:'그라데이션',
+    fill:'채우기',progressFillPattern:'진행률 채우기 패턴',fillColor:'채우기 색상',solid:'솔리드',diagonal:'다이아고널',horizontalLines:'가로줄',verticalLines:'세로줄',dots:'도트',grid:'격자',gradient:'그라데이션',diagonalLineOnly:'사선 · 흰 배경',horizontalLineOnly:'가로선 · 흰 배경',verticalLineOnly:'세로선 · 흰 배경',gridLineOnly:'격자선 · 흰 배경',
     addCat:'카테고리',addItem:'항목',addMs:'마일스톤',
     statuses:'상태 관리',badges:'배지 관리',json:'JSON 에디터',
     import:'JSON 가져오기',reset:'새 로드맵',
@@ -1084,7 +1154,7 @@ function mixHex(base,withColor='#FFFFFF',amount=.55){
 function darkenHex(color){return mixHex(color,'#111827',.18);}
 function normalizePattern(pattern){
   if(pattern==='stripe')return'diagonal';
-  if(['solid','diagonal','horizontal','vertical','dot','grid','gradient'].includes(pattern))return pattern;
+  if(['solid','diagonal','horizontal','vertical','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines'].includes(pattern))return pattern;
   return'solid';
 }
 function applyThemePreset(rm,preset){
@@ -1106,7 +1176,7 @@ function buildTemplate(type){
     roadmap:{
       id:uid('rm-'),title:'',subtitle:'',description:'',
       startDate:fd(new Date(y,m-1,1)),endDate:fd(new Date(y,m+8,0)),
-      locale:lang,scale:'month',showToday:true,showStatusLegend:true,theme:{preset:'default',override:{}},
+      locale:lang,scale:'month',style:'default',showToday:true,showStatusLegend:true,theme:{preset:'default',override:{}},
       statuses:[
         {id:'planned',    name:'Planned',     color:'#94A3B8',pattern:'solid', border:'dashed',completed:false},
         {id:'in-progress',name:'In Progress', color:'#6366F1',pattern:'diagonal',border:'solid', completed:false},
@@ -1293,12 +1363,14 @@ function validate(data){
     return local===v;
   };
   const enumOf=(v,values)=>values.includes(v);
+  const optionalText=(o,k,p)=>{if(has(o,k)&&typeof o[k]!=='string')add(`${p}/${k}`,'INVALID_TYPE');};
+  const metadata=(o,p)=>{if(has(o,'metadata'))object(o.metadata,`${p}/metadata`);};
   if(!object(data,'/'))return{valid:false,errors:err};
   allowed(data,['version','roadmap'],'/');required(data,['version','roadmap'],'/');
   if(data.version!=='1.0')add('/version','INVALID_VERSION');
   const rm=data.roadmap;
   if(!object(rm,'/roadmap'))return{valid:false,errors:err};
-  allowed(rm,['id','title','subtitle','description','startDate','endDate','rangeLocked','locale','scale','showToday','showStatusLegend','darkMode','theme','statuses','badges','categories','milestones','metadata'],'/roadmap');
+  allowed(rm,['id','title','subtitle','description','startDate','endDate','rangeLocked','locale','scale','showToday','showStatusLegend','darkMode','style','theme','statuses','badges','categories','milestones','metadata'],'/roadmap');
   required(rm,['id','title','statuses','badges','categories','milestones'],'/roadmap');
   if(!id(rm.id))add('/roadmap/id','INVALID_ID');if(!name(rm.title))add('/roadmap/title','INVALID_NAME');
   ['subtitle','description'].forEach(k=>{if(has(rm,k)&&typeof rm[k]!=='string')add(`/roadmap/${k}`,'INVALID_TYPE');});
@@ -1308,6 +1380,7 @@ function validate(data){
   if(date(rm.startDate)&&date(rm.endDate)&&pd(rm.startDate)>pd(rm.endDate))add('/roadmap','START_AFTER_END');
   if(has(rm,'locale')&&!enumOf(rm.locale,['ko','en']))add('/roadmap/locale','INVALID_LOCALE');
   if(has(rm,'scale')&&!enumOf(rm.scale,['auto','week','month','quarter']))add('/roadmap/scale','INVALID_SCALE');
+  if(has(rm,'style')&&!enumOf(rm.style,['default','card']))add('/roadmap/style','INVALID_STYLE');
   ['showToday','showStatusLegend','darkMode'].forEach(k=>{if(has(rm,k)&&typeof rm[k]!=='boolean')add(`/roadmap/${k}`,'INVALID_TYPE');});
   if(has(rm,'metadata')&&!object(rm.metadata,'/roadmap/metadata')){};
   if(has(rm,'theme')){if(!object(rm.theme,'/roadmap/theme')){}else{allowed(rm.theme,['preset','override'],'/roadmap/theme');required(rm.theme,['preset'],'/roadmap/theme');if(!enumOf(rm.theme.preset,Object.keys(THEME_PALETTES)))add('/roadmap/theme/preset','INVALID_THEME');if(has(rm.theme,'override')&&(!object(rm.theme.override,'/roadmap/theme/override')||Object.keys(rm.theme.override).length))add('/roadmap/theme/override','INVALID_OVERRIDE');}}
@@ -1317,22 +1390,33 @@ function validate(data){
   const unique=(list,path)=>{const seen=new Set();list.forEach((x,i)=>{if(!id(x?.id))add(`${path}/${i}/id`,'INVALID_ID');else if(seen.has(x.id))add(`${path}/${i}`,'DUPLICATE_ID');else seen.add(x.id);});return seen;};
   const stIds=unique(rm.statuses,'/roadmap/statuses');
   const bdIds=unique(rm.badges,'/roadmap/badges');
-  rm.statuses.forEach((s,i)=>{const p=`/roadmap/statuses/${i}`;if(!object(s,p))return;allowed(s,['id','name','color','pattern','progressPattern','border','completed','opacity','metadata'],p);required(s,['id','name','color','pattern','border'],p);if(!name(s.name))add(`${p}/name`,'INVALID_NAME');if(!color(s.color))add(`${p}/color`,'INVALID_COLOR');if(!enumOf(s.pattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient']))add(`${p}/pattern`,'INVALID_PATTERN');if(has(s,'progressPattern')&&!enumOf(s.progressPattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient']))add(`${p}/progressPattern`,'INVALID_PATTERN');if(!enumOf(s.border,['solid','dashed','dotted','none']))add(`${p}/border`,'INVALID_BORDER');if(has(s,'completed')&&typeof s.completed!=='boolean')add(`${p}/completed`,'INVALID_TYPE');if(has(s,'opacity')&&(typeof s.opacity!=='number'||s.opacity<0||s.opacity>1))add(`${p}/opacity`,'INVALID_OPACITY');});
-  rm.badges.forEach((b,i)=>{const p=`/roadmap/badges/${i}`;if(!object(b,p))return;allowed(b,['id','type','shape','text','color'],p);required(b,['id','type','color'],p);if(!enumOf(b.type,['shape','text']))add(`${p}/type`,'INVALID_BADGE_TYPE');if(b.type==='shape'&&!enumOf(b.shape,['flag','diamond','pin','rocket','star','check','circle','heart','fire','zap','shield','tag','square','triangle']))add(`${p}/shape`,'INVALID_SHAPE');if(b.type==='text'&&!name(b.text))add(`${p}/text`,'INVALID_TEXT');if(!object(b.color,`${p}/color`)||b.color.type!=='solid'||!color(b.color.value))add(`${p}/color`,'INVALID_COLOR');});
+  rm.statuses.forEach((s,i)=>{const p=`/roadmap/statuses/${i}`;if(!object(s,p))return;metadata(s,p);allowed(s,['id','name','color','pattern','progressPattern','border','completed','opacity','metadata'],p);required(s,['id','name','color','pattern','border'],p);if(!name(s.name))add(`${p}/name`,'INVALID_NAME');if(!color(s.color))add(`${p}/color`,'INVALID_COLOR');if(!enumOf(s.pattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines']))add(`${p}/pattern`,'INVALID_PATTERN');if(has(s,'progressPattern')&&!enumOf(s.progressPattern,['solid','diagonal','horizontal','vertical','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines']))add(`${p}/progressPattern`,'INVALID_PATTERN');if(!enumOf(s.border,['solid','dashed','dotted','none']))add(`${p}/border`,'INVALID_BORDER');if(has(s,'completed')&&typeof s.completed!=='boolean')add(`${p}/completed`,'INVALID_TYPE');if(has(s,'opacity')&&(typeof s.opacity!=='number'||s.opacity<0||s.opacity>1))add(`${p}/opacity`,'INVALID_OPACITY');});
+  rm.badges.forEach((b,i)=>{const p=`/roadmap/badges/${i}`;if(!object(b,p))return;allowed(b,['id','type','shape','text','color'],p);required(b,['id','type','color'],p);if(!enumOf(b.type,['shape','text']))add(`${p}/type`,'INVALID_BADGE_TYPE');if((b.type==='shape'||has(b,'shape'))&&!enumOf(b.shape,['flag','diamond','pin','rocket','star','check','circle','heart','fire','zap','shield','tag','square','triangle']))add(`${p}/shape`,'INVALID_SHAPE');if((b.type==='text'||has(b,'text'))&&!name(b.text))add(`${p}/text`,'INVALID_TEXT');if(!object(b.color,`${p}/color`)||b.color.type!=='solid'||!color(b.color.value))add(`${p}/color`,'INVALID_COLOR');});
   rm.categories.forEach((c,ci)=>{
-    const cp=`/roadmap/categories/${ci}`;if(!object(c,cp))return;allowed(c,['id','name','color','subtitle','link','order','items','metadata'],cp);required(c,['id','name','color','items'],cp);
+    const cp=`/roadmap/categories/${ci}`;if(!object(c,cp))return;metadata(c,cp);allowed(c,['id','name','color','subtitle','link','order','items','metadata'],cp);required(c,['id','name','color','items'],cp);
     if(!id(c.id)||ids.has(c.id))add(cp,!id(c.id)?'INVALID_ID':'DUPLICATE_ID');
     ids.add(c.id);
     if(!name(c.name))add(`${cp}/name`,'INVALID_NAME');if(!color(c.color))add(`${cp}/color`,'INVALID_COLOR');if(has(c,'subtitle')&&typeof c.subtitle!=='string')add(`${cp}/subtitle`,'INVALID_TYPE');if(has(c,'link')&&typeof c.link!=='string')add(`${cp}/link`,'INVALID_TYPE');if(has(c,'order')&&(!Number.isInteger(c.order)||c.order<0))add(`${cp}/order`,'INVALID_ORDER');if(!Array.isArray(c.items)){add(`${cp}/items`,'INVALID_TYPE');return;}
     c.items.forEach((item,ii)=>{
-      const p=`${cp}/items/${ii}`;if(!object(item,p))return;allowed(item,['id','name','subtitles','description','start','end','statusId','priority','badges','progress','fillColor','link','metadata'],p);required(item,['id','name'],p);
+      const p=`${cp}/items/${ii}`;if(!object(item,p))return;metadata(item,p);optionalText(item,'description',p);allowed(item,['id','name','subtitles','description','start','end','statusId','priority','badges','progress','fillColor','link','metadata'],p);required(item,['id','name'],p);
       if(!id(item.id)||ids.has(item.id))add(p,!id(item.id)?'INVALID_ID':'DUPLICATE_ID');
       ids.add(item.id);
-      if(!name(item.name))add(`${p}/name`,'INVALID_NAME');if(has(item,'start')!==has(item,'end'))add(p,'DATE_PAIR_REQUIRED');if(has(item,'start')&&!date(item.start))add(`${p}/start`,'INVALID_DATE');if(has(item,'end')&&!date(item.end))add(`${p}/end`,'INVALID_DATE');if(date(item.start)&&date(item.end)&&pd(item.start)>pd(item.end))add(p,'START_AFTER_END');if(has(item,'statusId')&&(!id(item.statusId)||!stIds.has(item.statusId)))add(`${p}/statusId`,'INVALID_STATUS_REF');if(has(item,'priority')&&!enumOf(item.priority,['none','low','medium','high','critical']))add(`${p}/priority`,'INVALID_PRIORITY');if(has(item,'progress')&&(!Number.isInteger(item.progress)||item.progress<0||item.progress>100))add(`${p}/progress`,'INVALID_PROGRESS');if(has(item,'fillColor')&&!color(item.fillColor))add(`${p}/fillColor`,'INVALID_COLOR');if(has(item,'link')&&typeof item.link!=='string')add(`${p}/link`,'INVALID_TYPE');if(has(item,'subtitles')&&(!Array.isArray(item.subtitles)||item.subtitles.some(x=>typeof x!=='string')))add(`${p}/subtitles`,'INVALID_TYPE');if(has(item,'badges')&&(!Array.isArray(item.badges)||new Set(item.badges).size!==item.badges.length))add(`${p}/badges`,'INVALID_BADGES');(item.badges||[]).forEach(bid=>{if(!id(bid)||!bdIds.has(bid))add(p,'INVALID_BADGE_REF');});
+      if(!name(item.name))add(`${p}/name`,'INVALID_NAME');if(has(item,'start')!==has(item,'end'))add(p,'DATE_PAIR_REQUIRED');if(has(item,'start')&&!date(item.start))add(`${p}/start`,'INVALID_DATE');if(has(item,'end')&&!date(item.end))add(`${p}/end`,'INVALID_DATE');if(date(item.start)&&date(item.end)&&pd(item.start)>pd(item.end))add(p,'START_AFTER_END');if(has(item,'statusId')&&(!id(item.statusId)||!stIds.has(item.statusId)))add(`${p}/statusId`,'INVALID_STATUS_REF');if(has(item,'priority')&&!enumOf(item.priority,['none','low','medium','high','critical']))add(`${p}/priority`,'INVALID_PRIORITY');if(has(item,'progress')&&(!Number.isInteger(item.progress)||item.progress<0||item.progress>100))add(`${p}/progress`,'INVALID_PROGRESS');if(has(item,'fillColor')&&!color(item.fillColor))add(`${p}/fillColor`,'INVALID_COLOR');if(has(item,'link')&&typeof item.link!=='string')add(`${p}/link`,'INVALID_TYPE');if(has(item,'subtitles')&&(!Array.isArray(item.subtitles)||item.subtitles.some(x=>typeof x!=='string')))add(`${p}/subtitles`,'INVALID_TYPE');if(has(item,'badges')&&(!Array.isArray(item.badges)||new Set(item.badges).size!==item.badges.length))add(`${p}/badges`,'INVALID_BADGES');(Array.isArray(item.badges)?item.badges:[]).forEach(bid=>{if(!id(bid)||!bdIds.has(bid))add(p,'INVALID_BADGE_REF');});
     });
   });
   unique(rm.milestones,'/roadmap/milestones');
-  rm.milestones.forEach((m,i)=>{const p=`/roadmap/milestones/${i}`;if(!object(m,p))return;allowed(m,['id','name','date','description','marker','line','labelPosition','metadata'],p);required(m,['id','name','date'],p);if(!name(m.name))add(`${p}/name`,'INVALID_NAME');if(!date(m.date))add(`${p}/date`,'INVALID_DATE');if(has(m,'labelPosition')&&m.labelPosition!=='top')add(`${p}/labelPosition`,'INVALID_LABEL_POSITION');});
+  rm.milestones.forEach((m,i)=>{const p=`/roadmap/milestones/${i}`;if(!object(m,p))return;allowed(m,['id','name','date','description','marker','line','labelPosition','metadata'],p);required(m,['id','name','date'],p);if(!name(m.name))add(`${p}/name`,'INVALID_NAME');if(!date(m.date))add(`${p}/date`,'INVALID_DATE');if(has(m,'labelPosition')&&m.labelPosition!=='top')add(`${p}/labelPosition`,'INVALID_LABEL_POSITION');metadata(m,p);optionalText(m,'description',p);
+    if(has(m,'marker')&&object(m.marker,`${p}/marker`)){
+      if(has(m.marker,'shape')&&!enumOf(m.marker.shape,MS_SHAPES))add(`${p}/marker/shape`,'INVALID_SHAPE');
+      if(has(m.marker,'color')&&!color(m.marker.color))add(`${p}/marker/color`,'INVALID_COLOR');
+      if(has(m.marker,'size')&&(typeof m.marker.size!=='number'||!Number.isFinite(m.marker.size)||m.marker.size<=0))add(`${p}/marker/size`,'INVALID_SIZE');
+    }
+    if(has(m,'line')&&object(m.line,`${p}/line`)){
+      if(has(m.line,'visible')&&typeof m.line.visible!=='boolean')add(`${p}/line/visible`,'INVALID_TYPE');
+      if(has(m.line,'style')&&!enumOf(m.line.style,['solid','dashed','dotted']))add(`${p}/line/style`,'INVALID_BORDER');
+      if(has(m.line,'color')&&!color(m.line.color))add(`${p}/line/color`,'INVALID_COLOR');
+    }
+});
   return{valid:err.length===0,errors:err};
 }
 function validId(value){return /^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(value);}
@@ -1447,7 +1531,7 @@ function renderHeaderLegend(){
   const legendItems=(rm.statuses||[]).map(s=>{
     const pat=normalizePattern(s.pattern);
     const bdr=s.border||'solid';
-    const patCls=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(pat)?`pat-${pat}`:'';
+    const patCls=['diagonal','vertical','horizontal','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines'].includes(pat)?`pat-${pat}`:'';
     const bdrCls=['dashed','dotted','none'].includes(bdr)?`bdr-${bdr}`:'';
     return `<div class="tl-legend-item" onclick="editStForm('${s.id}')" title="${t('editSection')}: ${esc(s.name)}">
       <span class="tl-legend-swatch ${patCls} ${bdrCls}" style="background:${s.color};opacity:${s.opacity??1}"></span>
@@ -1630,10 +1714,35 @@ window.triggerImport=function(){document.getElementById('fileIn').click();};
 /* ─────────────────────────────────────
    TIMELINE RENDERER
 ───────────────────────────────────── */
+function mountTimeline(container,rm,content,empty=false){
+  const previous=container.querySelector('#tlWrap');
+  const sameRoadmap=container.querySelector('[data-roadmap-id]')?.dataset.roadmapId===rm.id;
+  const scrollLeft=sameRoadmap&&previous?previous.scrollLeft:0;
+  const scrollTop=sameRoadmap?window.scrollY:0;
+  const style=rm.style==='card'?'card':'default';
+  container.innerHTML=`<div class="app-body roadmap-stage--${style}" data-roadmap-id="${esc(rm.id)}">${empty?content:
+    `<div class="tl-frame"><div class="tl-date-index roadmap-design--${style}"><div class="tl-index-scroll"></div></div><div class="tl-wrap" id="tlWrap" tabindex="0" role="region" aria-label="${t('catsItems')}">${content}</div></div>`}</div>`;
+  materializePatterns(container);
+  const viewport=container.querySelector('#tlWrap');
+  if(viewport){
+    const canvas=viewport.querySelector('.roadmap-canvas');
+    const index=container.querySelector('.tl-index-scroll');
+    const header=canvas.querySelector('.tl-header').cloneNode(true);
+    header.style.width=canvas.style.width;
+    header.style.margin='0 auto';
+    index.appendChild(header);
+    const syncIndex=()=>{index.scrollLeft=viewport.scrollLeft;};
+    viewport.addEventListener('scroll',syncIndex,{passive:true});
+    viewport.scrollLeft=scrollLeft;
+    syncIndex();
+  }
+  window.scrollTo({top:scrollTop,behavior:'instant'});
+}
+
 function renderTimeline(container){
   const rm=S.roadmap;
   if(!(rm.categories||[]).length){
-    container.innerHTML=`<div class="empty-timeline"><div class="empty-timeline-card"><h2>${t('addFirstItem')}</h2><p>${t('firstItemHelp')}</p><button class="btn btn-primary" onclick="openFirstItemWizard()">${SVG.plus} ${t('addFirstItem')}</button></div></div>`;
+    mountTimeline(container,rm,`<div class="empty-timeline"><div class="empty-timeline-card"><h2>${t('addFirstItem')}</h2><p>${t('firstItemHelp')}</p><button class="btn btn-primary" onclick="openFirstItemWizard()">${SVG.plus} ${t('addFirstItem')}</button></div></div>`,true);
     return;
   }
   const range=getRange();
@@ -1676,7 +1785,7 @@ function renderTimeline(container){
     const mc=ms.marker?.color||'#888';
     if(ms.line?.visible!==false){
       msLines+=`<div class="ms-vl" style="left:${mx}px;width:0">
-        <div class="ms-vl-inner ms-vl-${ms.line?.style||'dashed'}" style="border-color:${mc}"></div>
+        <div class="ms-vl-inner ms-vl-${ms.line?.style||'dashed'}" style="border-color:${ms.line?.color||mc}"></div>
       </div>`;
     }
     msMarkers+=`<div class="ms-mk" style="left:${280+mx}px;top:4px;color:${mc}" onclick="openMsForm('${ms.id}')">
@@ -1689,18 +1798,19 @@ function renderTimeline(container){
   let rows='';
   (rm.categories||[])
     .slice().sort((a,b)=>(a.order||0)-(b.order||0))
-    .forEach(cat=>{
+    .forEach((cat,categoryIndex)=>{
       const vis=(cat.items||[]).filter(item=>matchSearch(item,cat));
       if(!vis.length&&searchQ)return;
 
       /* category row */
       const catHref=safeLinkHref(cat.link);
-      rows+=`<div class="tl-cat-row" style="--category-color:${esc(cat.color||'#cbd5e1')}">
+      rows+=`<section class="tl-category-group" style="--category-color:${esc(cat.color||'#cbd5e1')}"><div class="tl-cat-row" style="--category-color:${esc(cat.color||'#cbd5e1')}">
         <div class="cat-gap-lines" style="left:280px;width:${totW}px">
           ${msLines}${gridHtml}
         </div>
         <div class="tl-cat-label" onclick="openCatForm('${cat.id}')">
           <div class="cat-dot" style="background:${cat.color};color:${cat.color}"></div>
+          <span class="card-category-number" aria-hidden="true">${String(categoryIndex+1).padStart(2,'0')}</span>
           <div class="cat-info">
             <span class="cat-nm">${esc(cat.name)}</span>
             ${cat.subtitle?`<span class="cat-sb">${esc(cat.subtitle)}</span>`:''}
@@ -1754,7 +1864,7 @@ function renderTimeline(container){
           const x1=Math.max(0,Math.min(totW,xPos(item.start)));
           const x2=Math.max(0,Math.min(totW,xPos(item.end)));
           const bw=Math.max(x2-x1,14);
-          const patCls=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(pat)?`pat-${pat}`:'';
+          const patCls=['diagonal','vertical','horizontal','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines'].includes(pat)?`pat-${pat}`:'';
           const bdrCls=['dashed','dotted','none'].includes(bdr)?`bdr-${bdr}`:'';
           let bbHtml='';
           (item.badges||[]).forEach(bid=>{
@@ -1764,7 +1874,7 @@ function renderTimeline(container){
             else bbHtml+=`<span>${shapeSVG(b.shape||'circle',b.color?.value||'#F59E0B',13)}</span>`;
           });
           const progColor=darkenHex(bc);
-          const progStyle=['diagonal','vertical','horizontal','dot','grid','gradient'].includes(progressPat)?`prog-${progressPat}`:'';
+          const progStyle=['diagonal','vertical','horizontal','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines'].includes(progressPat)?`prog-${progressPat}`:'';
           const prog=item.progress>0?`<div class="bar-prog ${progStyle}" style="width:${item.progress}%;background:${progColor}"></div>`:'';
           barHtml=`<div class="bar-outer" style="left:${x1}px;width:${bw}px;opacity:${op}"
             data-id="${item.id}" data-cid="${cat.id}"
@@ -1801,24 +1911,20 @@ function renderTimeline(container){
           </div>
         </div>`;
       });
+      rows+='</section>';
     });
 
   const html=`
-    <div class="app-body">
-      <div class="tl-wrap" id="tlWrap">
-        <div class="roadmap-canvas" style="width:${280+totW}px;min-width:${280+totW}px;position:relative">
-          <div class="tl-header" style="position:relative">
+        <div class="roadmap-canvas roadmap-design--${rm.style==='card'?'card':'default'}" style="width:${280+totW}px;min-width:${280+totW}px;position:relative">
+          <div class="tl-header">
             <div class="tl-header-label">${t('catsItems')}</div>
             <div class="tl-header-cells" style="width:${totW}px">${hCells}</div>
             ${msMarkers}
           </div>
           <div>${rows}</div>
-        </div>
-      </div>
-    </div>`;
+        </div>`;
 
-  container.innerHTML=html;
-  materializePatterns(container);
+  mountTimeline(container,rm,html);
 }
 
 function updateSB(){
@@ -1870,6 +1976,7 @@ function openRoadmapSettings(){
     </div>
     <div class="fg"><label class="fl">${t('todayDateLine')}</label><select class="fi" id="fRtoday"><option value="true" ${rm.showToday!==false?'selected':''}>${t('show')}</option><option value="false" ${rm.showToday===false?'selected':''}>${t('hide')}</option></select></div>
     <div class="fg"><label class="fl">${t('statusLegend')}</label><select class="fi" id="fRstatusLegend"><option value="true" ${rm.showStatusLegend!==false?'selected':''}>${t('show')}</option><option value="false" ${rm.showStatusLegend===false?'selected':''}>${t('hide')}</option></select></div>
+    <div class="fg"><label class="fl" for="fRstyle">${t('layoutStyle')}</label><select class="fi" id="fRstyle"><option value="default" ${rm.style!=='card'?'selected':''}>${t('styleDefault')}</option><option value="card" ${rm.style==='card'?'selected':''}>${t('styleCard')}</option></select><div class="fi-hint">${t('styleHint')}</div></div>
     <div class="fg"><label class="fl">${t('themePalette')}</label><div class="fi-row"><select class="fi" id="fRtheme">${themeOpts}</select><button class="btn btn-ghost btn-sm" type="button" id="fRthemeApply">${t('applyTheme')}</button></div><div class="fi-hint">${t('themeHint')}</div></div>`;
   const foot=`<button class="btn btn-ghost btn-sm" onclick="closeModal()">${t('cancel')}</button><button class="btn btn-primary btn-sm" id="fRsave">${t('apply')}</button>`;
   openModal(t('roadmapSettings'),body,foot);
@@ -1880,6 +1987,7 @@ function openRoadmapSettings(){
     rm.subtitle=document.getElementById('fRsubtitle').value.trim()||undefined;
     rm.startDate=start||undefined;rm.endDate=end||undefined;
     rm.rangeLocked=Boolean(start&&end);
+    rm.style=document.getElementById('fRstyle').value;
     rm.showToday=document.getElementById('fRtoday').value==='true';
     rm.showStatusLegend=document.getElementById('fRstatusLegend').value==='true';
     pushHist();closeModal();toast(lang==='ko'?'로드맵 설정이 적용되었습니다':'Roadmap settings applied','ok');
@@ -2094,11 +2202,15 @@ function openStForm(s){
   const currentProgressPattern=normalizePattern(d.progressPattern||d.pattern);
   const pOpts=[
     ['solid','solid'],['diagonal','diagonal'],['horizontal','horizontalLines'],['vertical','verticalLines'],
-    ['dot','dots'],['grid','grid'],['gradient','gradient']
+    ['dot','dots'],['grid','grid'],['gradient','gradient'],
+    ['diagonal-lines','diagonalLineOnly'],['horizontal-lines','horizontalLineOnly'],
+    ['vertical-lines','verticalLineOnly'],['grid-lines','gridLineOnly']
   ].map(([value,label])=>`<option value="${value}" ${currentPattern===value?'selected':''}>${t(label)}</option>`).join('');
   const progressOpts=[
     ['solid','solid'],['diagonal','diagonal'],['horizontal','horizontalLines'],['vertical','verticalLines'],
-    ['dot','dots'],['grid','grid'],['gradient','gradient']
+    ['dot','dots'],['grid','grid'],['gradient','gradient'],
+    ['diagonal-lines','diagonalLineOnly'],['horizontal-lines','horizontalLineOnly'],
+    ['vertical-lines','verticalLineOnly'],['grid-lines','gridLineOnly']
   ].map(([value,label])=>`<option value="${value}" ${currentProgressPattern===value?'selected':''}>${t(label)}</option>`).join('');
   const bOpts=['solid','dashed','dotted','none'].map(b=>`<option value="${b}" ${d.border===b?'selected':''}>${b}</option>`).join('');
   const body=`
@@ -2545,7 +2657,7 @@ function generateStaticHTMLFragment(){
   const canvas=document.querySelector('.roadmap-canvas');
   if(!canvas)return '';
   const sheet=document.createElement('div');
-  sheet.className='export-sheet roadmap-html-export';
+  sheet.className='export-sheet roadmap-html-export'+(S.roadmap.style==='card'?' export-sheet--card':'');
   const heading=document.createElement('div');heading.className='export-heading';
   const title=document.createElement('h1');title.textContent=S.roadmap.title||'Roadmap';heading.appendChild(title);
   if(S.roadmap.subtitle){const sub=document.createElement('p');sub.textContent=S.roadmap.subtitle;heading.appendChild(sub);}
@@ -2581,19 +2693,30 @@ async function doCopyHTML(){
 }
 
 function addPatternLayer(element,pattern,opacity){
+  // Line-only variants retain the selected color as ink, with a white surface.
+  const lineOnly=pattern.endsWith('-lines');
+  const ink=element.style.backgroundColor;
+  if(lineOnly){
+    pattern=pattern.slice(0,-6);
+    element.style.background='#fff';
+    if(!element.classList.contains('bdr-none'))element.style.borderColor=ink;
+    const bar=element.closest('.bar-pill');
+    if(bar)bar.classList.add('line-pattern-label');
+  }
   const width=element.offsetWidth;
   const height=element.offsetHeight;
   if(!width||!height)return;
   const layer=document.createElement('span');
   layer.setAttribute('aria-hidden','true');
   layer.style.cssText='position:absolute;inset:0;overflow:hidden;border-radius:inherit;pointer-events:none;z-index:1;';
-  const line=(style)=>{const part=document.createElement('span');part.style.cssText=`position:absolute;background:rgba(255,255,255,${opacity});${style}`;layer.appendChild(part);};
+  if(lineOnly&&!element.classList.contains('bar-prog'))layer.style.zIndex='0';
+  const line=(style)=>{const part=document.createElement('span');part.style.cssText=`position:absolute;background:${lineOnly?ink:`rgba(255,255,255,${opacity})`};${lineOnly?'opacity:.6;':''}${style}`;layer.appendChild(part);};
   if(pattern==='diagonal'){
-    for(let left=-height;left<width+height;left+=12)line(`top:${-height/2}px;left:${left}px;width:6px;height:${height*2}px;transform:rotate(-50deg);`);
+    for(let left=-height;left<width+height;left+=12)line(`top:${-height/2}px;left:${left}px;width:${lineOnly?1:6}px;height:${height*2}px;transform:rotate(-50deg);`);
   }else if(pattern==='vertical'){
-    for(let left=0;left<width;left+=8)line(`inset:0 auto 0 ${left}px;width:2px;`);
+    for(let left=0;left<width;left+=8)line(`inset:0 auto 0 ${left}px;width:${lineOnly?1:2}px;`);
   }else if(pattern==='horizontal'){
-    for(let top=0;top<height;top+=8)line(`inset:${top}px 0 auto 0;height:2px;`);
+    for(let top=0;top<height;top+=8)line(`inset:${top}px 0 auto 0;height:${lineOnly?1:2}px;`);
   }else if(pattern==='dot'){
     for(let top=3;top<height;top+=10)for(let left=3;left<width;left+=10)line(`left:${left}px;top:${top}px;width:4px;height:4px;border-radius:50%;`);
   }else if(pattern==='grid'){
@@ -2610,7 +2733,7 @@ function addPatternLayer(element,pattern,opacity){
 }
 
 function materializePatterns(root){
-  const patterns=['diagonal','vertical','horizontal','dot','grid','gradient'];
+  const patterns=['diagonal','vertical','horizontal','dot','grid','gradient','diagonal-lines','horizontal-lines','vertical-lines','grid-lines'];
   patterns.forEach(pattern=>{
     root.querySelectorAll(`.pat-${pattern},.prog-${pattern}`).forEach(element=>{
       if(element.dataset.patternMaterialized)return;
@@ -2627,7 +2750,7 @@ async function doExportPNG(){
   if(!canvas)return;
   const ov=document.createElement('div');ov.className='exp-ov';ov.innerHTML='<div class="exp-spin"></div><p>Generating PNG…</p>';document.body.appendChild(ov);
   const sheet=document.createElement('div');
-  sheet.className='export-sheet';
+  sheet.className='export-sheet'+(S.roadmap.style==='card'?' export-sheet--card':'');
   sheet.style.cssText=`position:absolute;left:-100000px;top:0;width:${canvas.offsetWidth+80}px;`;
   const heading=document.createElement('div');heading.className='export-heading';
   const title=document.createElement('h1');title.textContent=S.roadmap.title||'Roadmap';heading.appendChild(title);

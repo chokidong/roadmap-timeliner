@@ -11,15 +11,15 @@ Download the installer for your operating system from the [latest GitHub Release
 - **macOS**: Open the downloaded `.dmg` and drag Roadmap Timeliner into Applications.
 - **Windows**: Run the downloaded `Setup.exe` and follow the installer.
 
-### Codex agent kit
+### AI agent kit
 
-Install the published agent kit, then restart Codex:
+Install once to add the roadmap skill for Codex, Claude Code, Cursor, and Gemini CLI. It also registers the MCP server for Claude Desktop, Cursor, and Gemini CLI. Restart the relevant clients after installation:
 
 ```sh
 npx -y @roadmap-timeliner/agent-kit install
 ```
 
-Once installed, ask Codex to create, validate, or edit a roadmap JSON file.
+Once installed, ask your AI client to create, validate, or edit a roadmap JSON file.
 
 ## Overview
 

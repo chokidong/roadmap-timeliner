@@ -4,14 +4,14 @@ import { runSetup, SetupOptions } from './setup.js';
 const [command, ...args] = process.argv.slice(2);
 
 function printUsage(): void {
-  process.stdout.write(`Usage: roadmap-agent <install|setup> [--target all|claude|cursor|codex]\n`);
+  process.stdout.write(`Usage: roadmap-agent <install|setup> [--target all|claude|cursor|codex|antigravity|gemini]\n`);
 }
 
-function parseTarget(argsList: string[]): 'all' | 'claude' | 'cursor' | 'codex' {
+function parseTarget(argsList: string[]): 'all' | 'claude' | 'cursor' | 'codex' | 'antigravity' | 'gemini' {
   const targetIndex = argsList.indexOf('--target');
   if (targetIndex >= 0 && argsList[targetIndex + 1]) {
     const val = argsList[targetIndex + 1];
-    if (['all', 'claude', 'cursor', 'codex'].includes(val)) {
+    if (['all', 'claude', 'cursor', 'codex', 'antigravity', 'gemini'].includes(val)) {
       return val as any;
     }
   }
@@ -25,7 +25,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const target = command === 'install' ? 'codex' : parseTarget(args);
+  const target = command === 'install' ? 'all' : parseTarget(args);
   const results = await runSetup({ target });
 
   for (const res of results) {
